@@ -386,12 +386,4 @@ def calc_theta_test():
 calc_CF_test()
 calc_theta_test()
 
-
-#%%
-x = np.linspace(-10, 10, 1000)
-y = 1 / (1 + np.exp(-x))
-
-plt.plot(x, y)
-
-
 #%%
