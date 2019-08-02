@@ -34,6 +34,9 @@ plt.plot(x, y)
 # ## non-convex function
 # 
 # 对于
+# $$
+# J(\theta)=\frac{1}{m}\sum_{i=1}^{m}\frac{1}{2}(\frac{1}{1+e^{-\theta x}} - y)^2
+# $$
 
 #%%
 # sample number
