@@ -1,3 +1,4 @@
 .vscode/settings.json
 notebook/.ipynb_checkpoints/
 .DS_Store
+.vscode/.ropeproject/
