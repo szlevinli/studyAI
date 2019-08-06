@@ -130,58 +130,35 @@ plt.plot(thetas, J_thetas, '.')
 # logistic regression 所使用的 cost function 与 log 函数有关，这里先初步理解一下 log 函数
 
 #%% [markdown]
-# about $logz$ function
+# # about $log(x)$ function
 
 #%%
-# about log function plot
-def plot_log_function(x, y, title):
-	plt.axhline(y=0, c='r', ls='--')
-	plt.text(0, -0.2, 'y=0')
-	plt.axvline(x=1, c='blue', ls='--')
-	plt.text(1.1, -2, 'x=1')
+figure, (ax1, ax2) = plt.subplots(1, 2)
 
-	plt.title(title)
-	plt.xlabel('x')
-	plt.ylabel('y')
-
-	plt.plot(x, y)
-
-def plot_log_function2(x, y, title):
-	plt.axhline(y=0, c='r', ls='--')
-	# plt.text(0, -0.2, 'y=0')
-	plt.axvline(x=0, c='blue', ls='--')
-	# plt.text(1.1, -2, 'x=1')
-
-	plt.title(title)
-	plt.xlabel('x')
-	plt.ylabel('y')
-
-	plt.plot(x, y)
-
-#%%
-x = np.linspace(0.1, 10, 1000)
-y = np.log(x)
-
-plot_log_function(x, y, r'$y=\log(x)$')
-
-
-#%%
-x = np.linspace(0.1, 10, 1000)
+x = np.linspace(0.01, 0.99, 1000)
 y = -np.log(x)
 
-plot_log_function(x, y, r'$y=-\log(x)$')
+ax1.set_title(r'$-log(x)$')
+ax1.set_xlabel('x')
+ax1.set_ylabel('y', rotation=0)
 
-#%%
-x = np.linspace(-10, 0.9, 1000)
-y = np.log(1-x)
+ax1.axhline(y=0, c='r', ls='--')
+ax1.axvline(x=1, c='blue', ls='--')
 
-plot_log_function2(x, y, r'$y=\log(1-x)$')
+ax1.plot(x, y, label=r'$log(x)$')
 
-#%%
-x = np.linspace(-10, 0.9, 1000)
 y = -np.log(1-x)
 
-plot_log_function2(x, y, r'$y=-\log(1-x)$')
+ax2.set_title(r'$-log(1-x)$')
+ax2.set_xlabel('x')
+ax2.set_ylabel('y', rotation=0)
+
+ax2.axhline(y=0, c='r', ls='--')
+ax2.axvline(x=0, c='blue', ls='--')
+
+ax2.plot(x, y, label=r'$-log(1-x)$')
+
+plt.show()
 
 
 #%%
