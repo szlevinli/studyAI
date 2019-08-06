@@ -129,4 +129,59 @@ plt.plot(thetas, J_thetas, '.')
 #%% [markdown]
 # logistic regression 所使用的 cost function 与 log 函数有关，这里先初步理解一下 log 函数
 
+#%% [markdown]
+# about $logz$ function
+
+#%%
+# about log function plot
+def plot_log_function(x, y, title):
+	plt.axhline(y=0, c='r', ls='--')
+	plt.text(0, -0.2, 'y=0')
+	plt.axvline(x=1, c='blue', ls='--')
+	plt.text(1.1, -2, 'x=1')
+
+	plt.title(title)
+	plt.xlabel('x')
+	plt.ylabel('y')
+
+	plt.plot(x, y)
+
+def plot_log_function2(x, y, title):
+	plt.axhline(y=0, c='r', ls='--')
+	# plt.text(0, -0.2, 'y=0')
+	plt.axvline(x=0, c='blue', ls='--')
+	# plt.text(1.1, -2, 'x=1')
+
+	plt.title(title)
+	plt.xlabel('x')
+	plt.ylabel('y')
+
+	plt.plot(x, y)
+
+#%%
+x = np.linspace(0.1, 10, 1000)
+y = np.log(x)
+
+plot_log_function(x, y, r'$y=\log(x)$')
+
+
+#%%
+x = np.linspace(0.1, 10, 1000)
+y = -np.log(x)
+
+plot_log_function(x, y, r'$y=-\log(x)$')
+
+#%%
+x = np.linspace(-10, 0.9, 1000)
+y = np.log(1-x)
+
+plot_log_function2(x, y, r'$y=\log(1-x)$')
+
+#%%
+x = np.linspace(-10, 0.9, 1000)
+y = -np.log(1-x)
+
+plot_log_function2(x, y, r'$y=-\log(1-x)$')
+
+
 #%%
