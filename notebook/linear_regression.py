@@ -66,15 +66,53 @@ print(f'matplotlib version is {mpl.__version__}')
 # - 为了方便计算 Andrew NG 对 MSE 函数做了一点调整，该调整并不会影响整个计算结果，主要是在公式前加了一个$\frac{1}{2}$，使得公式变为$J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})^2$
 #
 # 计算过程：
-# - $\frac{\partial}{\partial \theta}J(\theta)=\frac{\partial}{\partial \theta}(\frac{1}{2m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})^2)$
+# 1. $\frac{\partial}{\partial \theta}J(\theta)=\frac{\partial}{\partial \theta}(\frac{1}{2m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})^2)$
 # ---
-# - $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}\frac{\partial}{\partial \theta}(h_{\theta}(x^{(i)})-y^{(i)})^2$
+# 1. $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}\frac{\partial}{\partial \theta}(h_{\theta}(x^{(i)})-y^{(i)})^2$
 # ---
-# - $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}2(h_{\theta}(x^{(i)})-y^{(i)})\frac{\partial}{\partial \theta}((h_{\theta}(x^{(i)})-y^{(i)})$
+# 1. $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}2(h_{\theta}(x^{(i)})-y^{(i)})\frac{\partial}{\partial \theta}((h_{\theta}(x^{(i)})-y^{(i)})$
 # ---
-# - $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})\frac{\partial}{\partial \theta}((h_{\theta}(x^{(i)})-y^{(i)})$
+# 1. $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})\frac{\partial}{\partial \theta}((h_{\theta}(x^{(i)})-y^{(i)})$
 # ---
-# - $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})x^{(i)}$
+# 1. $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})x^{(i)}$
+# > 上面第 4 步到第 5 步的推导过程如下：
+#
+# > $\because h_{\theta}(x^{(i)}) = \theta_0x_0^{(i)} + \theta_1x_1^{(i)} + \cdots + \theta_nx_n^{(i)}$
+#
+# > 
+# $
+# \begin{align*}
+#   \therefore \frac{\partial}{\partial \theta}((h_{\theta}(x^{(i)})-y^{(i)})
+#       &= \frac{\partial}{\partial \theta}(\theta_0x_0^{(i)} + \theta_1x_1^{(i)} + \cdots + \theta_nx_n^{(i)}-y^{(i)})
+# \end{align*}
+# $
+# >
+# $
+# \begin{align*}
+#   \frac{\partial}{\partial \theta_0}((h_{\theta_0}(x_0^{(i)})-y_0^{(i)})
+#       &= \frac{\partial}{\partial \theta}(\theta_0x_0^{(i)} + \theta_1x_1^{(i)} + \cdots + \theta_nx_n^{(i)}-y^{(i)}) \\
+#       &= x_0^{(i)} + 0 + \cdots + 0 - 0 \\
+#       &= x_0^{(i)}
+# \end{align*}
+# $
+# >
+# $
+# \begin{align*}
+#   \frac{\partial}{\partial \theta_1}((h_{\theta_1}(x_1^{(i)})-y_1^{(i)})
+#       &= \frac{\partial}{\partial \theta}(\theta_0x_0^{(i)} + \theta_1x_1^{(i)} + \cdots + \theta_nx_n^{(i)}-y^{(i)}) \\
+#       &= x_1^{(i)} + 0 + \cdots + 0 - 0 \\
+#       &= x_1^{(i)}
+# \end{align*}
+# $
+# >
+# $
+# \begin{align*}
+#   \frac{\partial}{\partial \theta_n}((h_{\theta_n}(x_n^{(i)})-y_n^{(i)})
+#       &= \frac{\partial}{\partial \theta}(\theta_0x_0^{(i)} + \theta_1x_1^{(i)} + \cdots + \theta_nx_n^{(i)}-y^{(i)}) \\
+#       &= x_n^{(i)} + 0 + \cdots + 0 - 0 \\
+#       &= x_n^{(i)}
+# \end{align*}
+# $
 #
 # 对于$\theta$的更新规则而言:
 # - $\theta_0=\theta_0-\frac{\partial}{\partial \theta_0}J(\theta_0)=\theta_0-\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})x_{0}^{(i)}$
