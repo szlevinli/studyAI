@@ -122,7 +122,7 @@ J_thetas = np.zeros(theta_iterators)
 # print(f'thetas={thetas}, size is {thetas.size}')
 
 for idx, theta in np.ndenumerate(thetas):
-	J_thetas[idx] = calc_cost_linear_regression(theta, x, y)
+    J_thetas[idx] = calc_cost_linear_regression(theta, x, y)
 plt.plot(thetas, J_thetas, '.')
 
 
@@ -160,5 +160,72 @@ ax2.plot(x, y, label=r'$-log(1-x)$')
 
 plt.show()
 
+#%% [markdown]
+# ## Logistic Regression Cost Function
+#
+# `hypothesis function` is $h_\theta(x)=\frac{1}{1 + e^{-\Theta^Tx}}$ and 如果沿用线性的 $Cost(h_\theta(x),y)=\frac{1}{2}(h_\theta(x)-y)^2$ 则
+#
+# The Cost Function is
+#
+# $$
+# \begin{align*}
+# J(\theta) &= \frac{1}{m}\sum_{i=1}^m Cost(h_\theta(x^{(i)}),y^{(i)}) \\
+#           &= \frac{1}{m}\sum_{i=1}^m \frac{1}{2}(h_\theta(x^{(i)})-y^{(i)})^2 \\
+#           &= \frac{1}{m}\sum_{i=1}^m \frac{1}{2}(\frac{1}{1 + e^{-\Theta^Tx}}-y^{(i)})^2
+# \end{align*}
+# $$
+#
+# 沿用线性的成本函数方法会导致非凸函数，从而无法使用梯度下降找到全局最优点。
 
 #%%
+m = 100
+x = np.random.random_sample(m)
+y = np.linspace(0, 2, m)
+mm = 1000
+thetas = np.linspace(-10, 10, mm)
+J_thetas = np.zeros(mm)
+
+for idx, val in enumerate(thetas):
+    h = 1 / (1 + np.exp(-val * x))
+    c = (h - y) ** 2 / 2
+    J_thetas[idx] = c.mean()
+
+plt.plot(thetas, J_thetas, '-')
+
+#%% [markdown]
+# 鉴于上述原因，我们将成本函数调整为
+#
+# `hypothesis function` is $h_\theta(x)=\frac{1}{1 + e^{-\Theta^Tx}}$ and $Cost(h_\theta(x),y) = -y log(h_\theta(x)) - (1 - y) log(1 - h_\theta(x))$
+#
+# The Cost Function is
+#
+# $$
+# \begin{align*}
+# J(\theta) &= \frac{1}{m}\sum_{i=1}^m Cost(h_\theta(x^{(i)}),y^{(i)}) \\
+#           &= \frac{1}{m}\sum_{i=1}^m [-y log(h_\theta(x)) - (1 - y) log(1 - h_\theta(x))] \\
+#           &= -\frac{1}{m}\sum_{i=1}^m [y log(h_\theta(x)) + (1 - y) log(1 - h_\theta(x))] \\
+#			&= -\frac{1}{m}\sum_{i=1}^m [y log(\frac{1}{1 + e^{-\Theta^Tx}}) + (1 - y) log(1 - \frac{1}{1 + e^{-\Theta^Tx}})]
+# \end{align*}
+# $$
+
+
+#%%
+m = 100
+x = np.random.random_sample(m)
+y = np.linspace(0, 2, m)
+mm = 1000
+thetas = np.linspace(-10, 10, mm)
+J_thetas = np.zeros(mm)
+
+for idx, val in enumerate(thetas):
+    h = 1 / (1 + np.exp(-val * x))
+    c = y * np.log(h) + (1 - y) * np.log(1 - h)
+    J_thetas[idx] = c.mean()
+
+plt.plot(thetas, J_thetas, '-')
+
+#%%
+x = np.array([1,2,3])
+y = np.array([2,2,2])
+print(x.mean())
+print(y * np.log(x))
