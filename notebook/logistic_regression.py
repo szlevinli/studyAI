@@ -30,7 +30,7 @@ print(f'matplotlib version is {mpl.__version__}')
 
 #%% plot sigmoid function/logistic function
 x = np.linspace(-5, 5, 1000)
-y = 1 / (1 + np.exp(x*-1))
+y = 1 / (1 + np.exp(x * -1))
 
 plt.axvline(ls='--', color='r')
 plt.plot(x, y)
