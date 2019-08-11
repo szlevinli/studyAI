@@ -39,7 +39,7 @@ print(f'matplotlib version is {mpl.__version__}')
 # Cost Function 成本函数，使用该函数去使得上面的 LHF 达到最佳值，通常使用 Mean Sequared Error (MSE) 平均方差公式作为上面 LHF 的 Cost Function，它的公式如下：
 #
 # $$
-# J(\theta)=\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})^2
+# J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})^2
 # $$
 #
 # - $J(\theta)$: cost function $J$ 在给定的 $\theta$ 情况下的结果
@@ -290,7 +290,7 @@ def calc_CF(predictions, targets):
     float
          成本函数计算结果值
     '''
-    return ((predictions - targets) ** 2).sum() / len(predictions.index)
+    return ((predictions - targets) ** 2).mean() / 2
 
 def calc_theta(theta_old, predictions, targets, features, learning_rate):
     '''
@@ -315,7 +315,8 @@ def calc_theta(theta_old, predictions, targets, features, learning_rate):
     float
          new theta value
     '''
-    return theta_old - learning_rate * (predictions * features - targets * features).sum() / len(predictions.index)
+    return (theta_old
+                - learning_rate * (predictions * features - targets * features).mean())
 
 def calc_DG(dataset, thetas, features, target_field_name, learning_rate):
     '''
@@ -371,7 +372,8 @@ def normal_equation(dataset, targets):
 #%%
 x = train_set[:]
 x['field_x'] = pd.Series(np.full(len(train_set.index), 1), index=train_set.index)
-x1 = pd.concat([x['field_x'], x['sqft_living'], x['bathrooms'], x['sqft_above'], x['sqft_living15']], axis=1)
+# x1 = pd.concat([x['field_x'], x['sqft_living'], x['bathrooms'], x['sqft_above'], x['sqft_living15']], axis=1)
+x1 = pd.concat([x['field_x'], x['sqft_living']], axis=1)
 
 y = x['price']
 z = normal_equation(x1, y)
@@ -379,17 +381,19 @@ z
 
 
 #%%
-slices = 1000
+slices = 10000
 theta_old = 0.0
 target_field_name = "price"
-learning_rate = 0.0001
+learning_rate = 0.01
 
 # 为了满足线性假设函数，需要增加一个参数和特征，分布设为 1 和 0
 # 增加的这个参数即为线性假设函数的截距，通常命名为theta 0，其值设置为1
 virtual_field_name = 'field_x'
 train_set[virtual_field_name] = pd.Series(np.full(len(train_set.index), 1), index=train_set.index)
-thetas = [0.0, 0.0, 0.0, 0.0, 0.0]
-features = [virtual_field_name, "sqft_living", "bathrooms", "sqft_above", "sqft_living15"]
+# thetas = [0.0, 0.0, 0.0, 0.0, 0.0]
+# features = [virtual_field_name, "sqft_living", "bathrooms", "sqft_above", "sqft_living15"]
+thetas = [0.0, 0.0]
+features = [virtual_field_name, "sqft_living"]
 
 for i in range(15):
     cf, thetas = calc_DG(train_set[:slices], thetas, features, target_field_name, learning_rate)
