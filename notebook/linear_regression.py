@@ -1,4 +1,5 @@
-#%% Change working directory from the workspace root to the ipynb file location. Turn this addition off with the DataScience.changeDirOnImportExport setting
+#%% Change working directory from the workspace root to the ipynb file location. 
+# Turn this addition off with the DataScience.changeDirOnImportExport setting
 # ms-python.python added
 import os
 try:
@@ -20,11 +21,13 @@ print(f'matplotlib version is {mpl.__version__}')
 #
 # ## 背景
 #
-# 根据 Andrew NG 在[网易云课堂](https://study.163.com/course/courseMain.htm?courseId=1004570029)的 Meachine Learning 课程，使用 python 来编写 linear regression 的算法，从而更加深刻的理解这些算法模型
+# 根据 Andrew NG 在[网易云课堂](https://study.163.com/course/courseMain.htm?courseId=1004570029)的
+# Meachine Learning 课程，使用 python 来编写 linear regression 的算法，从而更加深刻的理解这些算法模型
 #
 # ## Linear Hypothesis Function（LHF）
 #
-# Linear Hypothesis Function 线性假设函数用于 Linear Regression 模型，它假设数据特征（输入）和 target（输出）呈现一种线性关系，可以使用如下数学公式表示：
+# Linear Hypothesis Function 线性假设函数用于 Linear Regression 模型，
+# 它假设数据特征（输入）和 target（输出）呈现一种线性关系，可以使用如下数学公式表示：
 #
 # $$
 # h(\theta)=\theta_0+\theta_{1}x_1+...+\theta_{n}x_n
@@ -36,7 +39,8 @@ print(f'matplotlib version is {mpl.__version__}')
 #
 # ## Cost Function（CF）
 #
-# Cost Function 成本函数，使用该函数去使得上面的 LHF 达到最佳值，通常使用 Mean Sequared Error (MSE) 平均方差公式作为上面 LHF 的 Cost Function，它的公式如下：
+# Cost Function 成本函数，使用该函数去使得上面的 LHF 达到最佳值，
+# 通常使用 Mean Sequared Error (MSE) 平均方差公式作为上面 LHF 的 Cost Function，它的公式如下：
 #
 # $$
 # J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})^2
@@ -47,11 +51,13 @@ print(f'matplotlib version is {mpl.__version__}')
 # - $x^{(i)}$: 训练集的第$i$个输入向量
 # - $y^{(i)}$: 训练集的第$i$个输出分类标志（就是target）
 # - $\theta$: 选择的参数值或权重（$\theta_0 \theta_1 \theta_2 ...$）
-# - $(h_{\theta}(x^{(i)})$: 在给定的 $\theta$ 情况下，训练集的第$i$个样本的预测结果（这里用的就是线性假设函数 $h(x)=\theta_0+\theta_1x$ 计算出的
+# - $(h_{\theta}(x^{(i)})$: 在给定的 $\theta$ 情况下，训练集的第$i$个样本的预测结果
+#   （这里用的就是线性假设函数 $h(x)=\theta_0+\theta_1x$ 计算出的
 #
 # ## Gradient Descent （GD）
 #
-# Gradient Descent 梯度下降是一种算法，用于计算 Linear Hypothesis Function 的系数（$\theta$）,使用该算法采用迭代的方式可以计算出 CF 的最小值，因此称为“梯度下降”。
+# Gradient Descent 梯度下降是一种算法，用于计算 Linear Hypothesis Function 的系数（$\theta$）,
+# 使用该算法采用迭代的方式可以计算出 CF 的最小值，因此称为“梯度下降”。
 #
 # 梯度下降的算法如下：
 # 1. 随机假设$\theta$的值，通常设置为0
@@ -63,18 +69,37 @@ print(f'matplotlib version is {mpl.__version__}')
 # 这里重点解释$\frac{\partial}{\partial \theta}J(\theta)$的计算方式，首先介绍表示方法：
 # - $x_{j}^{(i)}$：表示第$i$个样本的第$j$个特征的值
 # - 预设$x_0=1$，因为在 LHF 中$\theta_0$是没有对应的变量，这里预设一个且设置为1，不会影响 LHF
-# - 为了方便计算 Andrew NG 对 MSE 函数做了一点调整，该调整并不会影响整个计算结果，主要是在公式前加了一个$\frac{1}{2}$，使得公式变为$J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})^2$
+# - 为了方便计算 Andrew NG 对 MSE 函数做了一点调整，该调整并不会影响整个计算结果，主要是在公式前加了一个$\frac{1}{2}$，
+#   使得公式变为$J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})^2$
 #
 # 计算过程：
-# 1. $\frac{\partial}{\partial \theta}J(\theta)=\frac{\partial}{\partial \theta}(\frac{1}{2m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})^2)$
+# 1. $\frac{\partial}{\partial \theta}J(\theta) 
+#       = \frac{\partial}{\partial \theta}(\frac{1}{2m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})^2)$
+#
 # ---
-# 1. $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}\frac{\partial}{\partial \theta}(h_{\theta}(x^{(i)})-y^{(i)})^2$
+# 1.
+# $\frac{\partial}{\partial \theta}J(\theta)
+#       = \frac{1}{2m}\sum_{i=1}^{m}\frac{\partial}{\partial \theta}(h_{\theta}(x^{(i)})-y^{(i)})^2$
+#
 # ---
-# 1. $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{2m}\sum_{i=1}^{m}2(h_{\theta}(x^{(i)})-y^{(i)})\frac{\partial}{\partial \theta}((h_{\theta}(x^{(i)})-y^{(i)})$
+# 1.
+# $\frac{\partial}{\partial \theta}J(\theta)
+#       = \frac{1}{2m}\sum_{i=1}^{m}2(h_{\theta}(x^{(i)})
+#           -y^{(i)})\frac{\partial}{\partial \theta}((h_{\theta}(x^{(i)})-y^{(i)})$
+#
 # ---
-# 1. $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})\frac{\partial}{\partial \theta}((h_{\theta}(x^{(i)})-y^{(i)})$
+# 1.
+# $\frac{\partial}{\partial \theta}J(\theta)
+#       = \frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})\frac{\partial}{\partial \theta}((h_{\theta}(x^{(i)})
+#           -y^{(i)})$
+#
 # ---
-# 1. $\frac{\partial}{\partial \theta}J(\theta)=\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})x^{(i)}$
+# 1.
+# $\frac{\partial}{\partial \theta}J(\theta)
+#       = \frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})x^{(i)}$
+#
+# ---
+#
 # > 上面第 4 步到第 5 步的推导过程如下：
 #
 # > $\because h_{\theta}(x^{(i)}) = \theta_0x_0^{(i)} + \theta_1x_1^{(i)} + \cdots + \theta_nx_n^{(i)}$
@@ -90,7 +115,8 @@ print(f'matplotlib version is {mpl.__version__}')
 # $
 # \begin{align*}
 #   \frac{\partial}{\partial \theta_0}((h_{\theta_0}(x_0^{(i)})-y_0^{(i)})
-#       &= \frac{\partial}{\partial \theta}(\theta_0x_0^{(i)} + \theta_1x_1^{(i)} + \cdots + \theta_nx_n^{(i)}-y^{(i)}) \\
+#       &= \frac{\partial}{\partial \theta}(\theta_0x_0^{(i)} + \theta_1x_1^{(i)} 
+#           + \cdots + \theta_nx_n^{(i)}-y^{(i)}) \\
 #       &= x_0^{(i)} + 0 + \cdots + 0 - 0 \\
 #       &= x_0^{(i)}
 # \end{align*}
@@ -99,7 +125,8 @@ print(f'matplotlib version is {mpl.__version__}')
 # $
 # \begin{align*}
 #   \frac{\partial}{\partial \theta_1}((h_{\theta_1}(x_1^{(i)})-y_1^{(i)})
-#       &= \frac{\partial}{\partial \theta}(\theta_0x_0^{(i)} + \theta_1x_1^{(i)} + \cdots + \theta_nx_n^{(i)}-y^{(i)}) \\
+#       &= \frac{\partial}{\partial \theta}(\theta_0x_0^{(i)} + \theta_1x_1^{(i)} 
+#           + \cdots + \theta_nx_n^{(i)}-y^{(i)}) \\
 #       &= x_1^{(i)} + 0 + \cdots + 0 - 0 \\
 #       &= x_1^{(i)}
 # \end{align*}
@@ -108,21 +135,30 @@ print(f'matplotlib version is {mpl.__version__}')
 # $
 # \begin{align*}
 #   \frac{\partial}{\partial \theta_n}((h_{\theta_n}(x_n^{(i)})-y_n^{(i)})
-#       &= \frac{\partial}{\partial \theta}(\theta_0x_0^{(i)} + \theta_1x_1^{(i)} + \cdots + \theta_nx_n^{(i)}-y^{(i)}) \\
+#       &= \frac{\partial}{\partial \theta}(\theta_0x_0^{(i)} + \theta_1x_1^{(i)} 
+#           + \cdots + \theta_nx_n^{(i)}-y^{(i)}) \\
 #       &= x_n^{(i)} + 0 + \cdots + 0 - 0 \\
 #       &= x_n^{(i)}
 # \end{align*}
 # $
 #
 # 对于$\theta$的更新规则而言:
-# - $\theta_0=\theta_0-\frac{\partial}{\partial \theta_0}J(\theta_0)=\theta_0-\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})x_{0}^{(i)}$
+#
+# - $\theta_0=\theta_0-\frac{\partial}{\partial \theta_0}J(\theta_0)
+#       = \theta_0-\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})x_{0}^{(i)}$
+#
 # ---
-# - $\theta_1=\theta_1-\frac{\partial}{\partial \theta_1}J(\theta_1)=\theta_1-\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})x_{1}^{(i)}$
+# - $\theta_1=\theta_1-\frac{\partial}{\partial \theta_1}J(\theta_1)
+#       = \theta_1-\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})x_{1}^{(i)}$
+#
 # ---
 # - ...
-# ---
-# - $\theta_n=\theta_n-\frac{\partial}{\partial \theta_n}J(\theta_n)=\theta_n-\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})x_{n}^{(i)}$
 #
+# ---
+# - $\theta_n=\theta_n-\frac{\partial}{\partial \theta_n}J(\theta_n)
+#       = \theta_n-\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})x_{n}^{(i)}$
+#
+# ---
 #
 # ## Stochastic Gradient Descent （SGD）
 #
@@ -147,12 +183,15 @@ print(f'matplotlib version is {mpl.__version__}')
 # $$
 #
 # - $\theta$是向量，其中的元素是 LHF 中的各系数值，这个也是最终计算结果
-# - $X$是矩阵，其规模为$m\times n$，其中$m$表示数据集的记录数，$n$表示数据集的特征字段数，其元素为具体的数据集中数据，比如$X_{i,j}$表示第$i$个样本第$j$列特征的数据内容
+# - $X$是矩阵，其规模为$m\times n$，其中$m$表示数据集的记录数，$n$表示数据集的特征字段数，其元素为具体的数据集中数据，
+#       比如$X_{i,j}$表示第$i$个样本第$j$列特征的数据内容
 # - $y$表示target即标签或者说是输出
+
 #%% [markdown]
 # ## 数据集
 #
-# 为了实现并验证 linear regression 模型，需要一个数据集（`data/kc_house_data.csv`），这里采用 kaggle 的 House Sales in King County, USA 房价数据。
+# 为了实现并验证 linear regression 模型，需要一个数据集（`data/kc_house_data.csv`），
+# 这里采用 kaggle 的 House Sales in King County, USA 房价数据。
 #
 # 字段说明：
 # - id： a notation for a house
@@ -174,7 +213,8 @@ print(f'matplotlib version is {mpl.__version__}')
 # - zipcode： zip
 # - lat： Latitude coordinate
 # - long： Longitude coordinate
-# sqft_living15： Living room area in 2015(implies-- some renovations) This might or might not have affected the lotsize area
+# - sqft_living15： Living room area in 2015(implies-- some renovations) 
+#                   This might or might not have affected the lotsize area
 # - sqft_lot15： lotSize area in 2015(implies-- some renovations)
 
 #%%
@@ -200,7 +240,8 @@ test_set
 #%% [markdown]
 # ## 数据集特征分析
 #
-# 字段 price 作为本数据集的 target 或者称之为 flag。现在需要分析哪些字段可以作为特征，根据经验我们先看看 sqft_living 作为特征字段与 target 呈现那种形式，可以使用图表方式来直观的感受
+# 字段 price 作为本数据集的 target 或者称之为 flag。现在需要分析哪些字段可以作为特征，
+# 根据经验我们先看看 sqft_living 作为特征字段与 target 呈现那种形式，可以使用图表方式来直观的感受
 
 #%%
 import matplotlib.pyplot as plt
@@ -235,11 +276,13 @@ normal_price = normalization(train_set.price)
 fig, axes = plt.subplots(ROW_NUM, ROW_NUM, figsize=(12, 10))
 fig.tight_layout()
 
-fields = ['sqft_living', 'bedrooms', 'bathrooms',           'sqft_lot', 'floors', 'grade',           'sqft_above', 'sqft_basement', 'sqft_living15']
+fields = ['sqft_living', 'bedrooms', 'bathrooms', 'sqft_lot', 
+            'floors', 'grade', 'sqft_above', 'sqft_basement', 'sqft_living15']
 plots(fields, train_set, normal_price, ROW_NUM, COL_NUM)
 
 #%% [markdown]
-# 从上面图表可以看出，“sqft_living”，“bathromms”，“sqft_above”，“sqft_living15”这四个字段和价格“price”之间称线下关系较为明显，我们就采用这四个字段作为特征字段来进行建模
+# 从上面图表可以看出，“sqft_living”，“bathromms”，“sqft_above”，“sqft_living15”
+# 这四个字段和价格“price”之间称线下关系较为明显，我们就采用这四个字段作为特征字段来进行建模
 
 #%%
 def calc_prediction_price(dataset, thetas, features):
