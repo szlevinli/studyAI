@@ -187,10 +187,11 @@ def gradient_descent(thetas, features, targets, learning_rate, iterate_num):
     for _ in range(iterate_num):
         # *** 以下是核心算法 ***
         J_theta = calc_J_value(thetas, features, targets)
+        thetas_old = thetas
         thetas = calc_new_thetas(thetas, features, targets, learning_rate)
         # ***END
         plt_J_thetas.append(J_theta)
-        plt_thetas.append(thetas)
+        plt_thetas.append(thetas_old)
 
     return J_theta, thetas, plt_J_thetas, plt_thetas
 
@@ -262,18 +263,12 @@ def gradient_descent2():
     # plt.show()
 
 
-if __name__ == "__main__":
-    import io
-    import sys
-    import pandas as pd
-
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')
-
+def gd_3():
     df = pd.read_csv('../data/kc_house_data.csv')
     train_set = df.sample(frac=0.2, random_state=1)
 
-    fields = ['sqft_lot', #'sqft_living', 'sqft_above'
-    ]
+    fields = ['sqft_lot',  # 'sqft_living', 'sqft_above'
+              ]
     thetas = np.full((len(fields), ), 0)
     targets = train_set['price'].values
     features = train_set[fields].values
@@ -314,3 +309,38 @@ if __name__ == "__main__":
 
     result = np.array([test_set_targets, predicts])
     print(f'result is {result[:10]}')
+
+
+def gd_4():
+    thetas = np.array([0, 0])
+    features = np.array([[1, -0.867188766],
+                         [1, 0.026727652],
+                         [1, 1.575359235],
+                         [1, -1.232167203],
+                         [1, 0.497269083]])
+    targets = np.array([
+        221900,
+        538000,
+        180000,
+        604000,
+        510000
+    ])
+    learning_rate = 0.1
+    iterate_num = 999
+
+    J_theta, thetas, plt_J_thetas, plt_thetas = gradient_descent(
+        thetas, features, targets, learning_rate, iterate_num)
+
+    # print(f'plt_J_thetas = {plt_J_thetas}')
+    # print(f'plt_thetas = {plt_thetas}')
+    print(f'J_theta = {J_theta}')
+
+
+if __name__ == "__main__":
+    import io
+    import sys
+    import pandas as pd
+
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')
+
+    gd_4()
