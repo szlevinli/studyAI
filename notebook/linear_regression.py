@@ -6,16 +6,9 @@ def normalization(arr):
     '''
     正则化
     =====
-    采用 current_value - mean / (max - min) 算法使数值控制在[-1, 1]之间
-    其中聚合函数 max min mean 均按列处理, 比如:
-    arr = [[1, 2, 3],
-           [4, 5, 6]]
-    max = [4, 5, 6]
-    min = [1, 2, 3]
-    mean = [2.5, 3.5, 4.5]
-    返回的结果:
-    [[-0.5, -0.5, -0.5],
-     [ 0.5,  0.5,  0.5]]
+    采用 （current_value - mean） / std
+    std: standard deviation 标准偏差
+    按列计算 std mean
     特别注意算法中有除法运算, 需要考虑除零异常问题, 这里采用方法是如果被除数为零, 则将该被除数置为 1,
     返回结果将为 0, 并不会影响结果
 
@@ -29,14 +22,12 @@ def normalization(arr):
     numpy.ndarry[float]
           正则化后的数据
     '''
-    arr_max = np.apply_along_axis(np.max, 0, arr)
-    arr_min = np.apply_along_axis(np.min, 0, arr)
+    arr_std = np.apply_along_axis(np.std, 0, arr)
     arr_mean = np.apply_along_axis(np.mean, 0, arr)
-    arr_diff = np.array(arr_max - arr_min)
     # 防止发生除零异常
-    arr_diff[arr_diff == 0] = 1
+    arr_std[arr_std == 0] = 1
 
-    return (arr - arr_mean) / arr_diff
+    return (arr - arr_mean) / arr_std
 
 
 def verify_parameters(thetas, features, targets=None):
@@ -290,7 +281,7 @@ if __name__ == "__main__":
     iterate_num = 10000
 
     # normalization
-    targets = targets / 100000
+    # targets = targets / 100000
     features = normalization(features)
 
     # add theta_0 and x_0

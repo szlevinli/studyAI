@@ -7,17 +7,32 @@ import linear_regression as LR
 class Test_linear_regression(unittest.TestCase):
 
     def test_normalization_2D(self):
-        arr = np.array([[1, 2, 3, 9],
-                        [4, 5, 6, 9]])
-        expect = np.array([[-0.5, -0.5, -0.5, 0],
-                           [0.5, 0.5, 0.5, 0]])
-        result = LR.normalization(arr)
+        arr = np.array([[5650, 221900],
+                        [7242, 538000],
+                        [10000, 180000],
+                        [5000, 604000],
+                        [8080, 510000]])
+        expect = np.array([[-0.86719, -1.08224],
+                           [0.02673, 0.72894],
+                           [1.57536, -1.32232],
+                           [-1.23217, 1.10711],
+                           [0.49727, 0.56851]]
+                          )
+        result = np.round(LR.normalization(arr), 5)
 
         self.assertTrue(np.array_equal(expect, result))
 
     def test_normalization_1D(self):
-        arr = np.array([1, 2, 3, 9])
-        expect = np.array([-0.34375, -0.21875, -0.09375, 0.65625])
+        arr = np.array([5650,
+                        7242,
+                        10000,
+                        5000,
+                        8080])
+        expect = np.array([-0.86719,
+                           0.02673,
+                           1.57536,
+                           -1.23217,
+                           0.49727])
         result = np.round(LR.normalization(arr), 5)
 
         self.assertTrue(np.array_equal(expect, result))
