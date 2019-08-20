@@ -344,12 +344,26 @@ def gd_5():
     features = np.insert(features, 0, 1, axis=1)
     targets = df[1].values
     learning_rate = 0.01
-    iterate_num = 1
+    iterate_num = 2
 
     J_theta, thetas, plt_J_thetas, plt_thetas = gradient_descent(
         thetas, features, targets, learning_rate, iterate_num)
     
-    print(f'J_theta = {J_theta}')
+    print(f'plt_thetas={plt_thetas}')
+    
+
+def plot_surface3D(X, Y, Z):
+    from matplotlib import cm
+
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+
+    # Plot the surface.
+    surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm,
+                        linewidth=0, antialiased=False)
+    
+    plt.show()
+
 
 if __name__ == "__main__":
     import io
