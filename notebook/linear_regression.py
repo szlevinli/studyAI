@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import pandas as pd
 
 
 def normalization(arr):
@@ -196,7 +197,7 @@ def gradient_descent(thetas, features, targets, learning_rate, iterate_num):
     return J_theta, thetas, plt_J_thetas, plt_thetas
 
 
-def gradient_descent2():
+def gd_2():
     import pandas as pd
 
     df = pd.read_csv('../data/kc_house_data.csv')
@@ -335,12 +336,25 @@ def gd_4():
     # print(f'plt_thetas = {plt_thetas}')
     print(f'J_theta = {J_theta}')
 
+def gd_5():
+    df = pd.read_csv('../data/andrew/exedata1.csv', header=None)
+
+    thetas = np.array([0, 0])
+    features = df[[0]].values
+    features = np.insert(features, 0, 1, axis=1)
+    targets = df[1].values
+    learning_rate = 0.01
+    iterate_num = 1
+
+    J_theta, thetas, plt_J_thetas, plt_thetas = gradient_descent(
+        thetas, features, targets, learning_rate, iterate_num)
+    
+    print(f'J_theta = {J_theta}')
 
 if __name__ == "__main__":
     import io
     import sys
-    import pandas as pd
 
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')
 
-    gd_4()
+    gd_5()
