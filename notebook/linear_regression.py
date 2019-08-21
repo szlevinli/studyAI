@@ -192,9 +192,9 @@ def gradient_descent(thetas, features, targets, learning_rate, iterate_num):
         thetas = calc_new_thetas(thetas, features, targets, learning_rate)
         # ***END
         plt_J_thetas.append(J_theta)
-        plt_thetas.append(thetas_old)
+        plt_thetas.append(list(thetas_old))
 
-    return J_theta, thetas, plt_J_thetas, plt_thetas
+    return J_theta, thetas, np.array(plt_J_thetas), np.array(plt_thetas)
 
 
 def gd_2():
@@ -344,25 +344,46 @@ def gd_5():
     features = np.insert(features, 0, 1, axis=1)
     targets = df[1].values
     learning_rate = 0.01
-    iterate_num = 2
+    iterate_num = 1500
 
     J_theta, thetas, plt_J_thetas, plt_thetas = gradient_descent(
         thetas, features, targets, learning_rate, iterate_num)
-    
+
+    print(f'J_theta={J_theta}')
+    print(f'thetas={thetas}')
     print(f'plt_thetas={plt_thetas}')
-    
 
-def plot_surface3D(X, Y, Z):
-    from matplotlib import cm
 
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
+def plot_surface3D():
+    # import matplotlib.pyplot as plt
+    # from matplotlib import cm
 
-    # Plot the surface.
-    surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm,
-                        linewidth=0, antialiased=False)
-    
-    plt.show()
+    df = pd.read_csv('./data/andrew/exedata1.csv', header=None)
+
+    thetas = np.array([-3.63029144, 1.16636235])
+    features = df[[0]].values
+    features = np.insert(features, 0, 1, axis=1)
+    targets = df[1].values
+    targets = np.reshape(targets, (targets.shape[0], 1))
+
+    X = np.linspace(0, thetas[0], 50)
+    Y = np.linspace(0, thetas[1], 50)
+    X, Y = np.meshgrid(X, Y)
+    X_1 = X.flatten()
+    Y_1 = Y.flatten()
+    X_1 = np.reshape(X_1, (1, X_1.shape[0]))
+    Y_1 = np.reshape(Y_1, (1, Y_1.shape[0]))
+    Thetas = np.append(X_1, Y_1, axis=0)
+    print('')
+
+    # fig = plt.figure()
+    # ax = fig.gca(projection='3d')
+
+    # # Plot the surface.
+    # surf = ax.plot_surface(X, Y, Z, cmap=cm.coolwarm,
+    #                     linewidth=0, antialiased=False)
+
+    # plt.show()
 
 
 if __name__ == "__main__":
@@ -371,4 +392,5 @@ if __name__ == "__main__":
 
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')
 
-    gd_5()
+    plot_surface3D()
+    # gd_5()
