@@ -15,14 +15,14 @@ def gd_1():
     fields = ['sqft_lot', 'sqft_living', 'sqft_above']
     features = train_set[fields].values
     # get targets
-    targets = train_set['price'].values
+    targets = train_set[['price']].values
     # set thetas
     # * 根据features的column数来构建
-    thetas = np.full(features.shape[1], 0)
+    thetas = np.full((features.shape[1], 1), 0)
     # normalization
     features = LR.normalization(features)
     # add theta_0 and feature_0
-    thetas = np.insert(thetas, 0, 0)
+    thetas = np.insert(thetas, 0, 0, axis=0)
     features = np.insert(features, 0, 1, axis=1)
     # set learning rate
     learning_rate = 0.01
@@ -136,4 +136,4 @@ if __name__ == "__main__":
     # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')
 
     # plot_surface3D()
-    gd_2()
+    gd_1()

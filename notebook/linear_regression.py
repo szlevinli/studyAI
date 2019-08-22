@@ -38,11 +38,11 @@ def verify_parameters(thetas, features, targets=None):
 
     Parameters
     ----------
-    thetas:    numpy.ndarray[float]
+    thetas:    numpy.ndarray[float] 2D
                线性假设函数的系数数组
-    features : numpy.ndarray[float]
+    features : numpy.ndarray[float] 2D
                特征字段数组
-    targets :  numpy.ndarray[float]
+    targets :  numpy.ndarray[float] 2D
                实际值/目标值
 
     Returns
@@ -51,6 +51,11 @@ def verify_parameters(thetas, features, targets=None):
     '''
     if targets is None:
         targets = features
+    for key, val in locals().items():
+        if val.ndim != 2:
+            raise Exception(
+                f'{key} dimensions must be 2D'
+            )
     if thetas.shape[0] != features.shape[1] or features.shape[0] != targets.shape[0]:
         raise Exception(
             f'thetas rows is {thetas.shape[0]} '
@@ -124,7 +129,8 @@ def calc_J_partial_derivative(thetas, features, targets):
     d_by_features = d * features
 
     # 将矩阵按列计算平均值
-    return d_by_features.mean(axis=0)
+    d_mean = d_by_features.mean(axis=0)
+    return np.reshape(d_mean, (d_mean.shape[0], 1))
     # 这里说明一下矩阵的规模
     # thetas: (3, 1)
     # features: (5, 3)
