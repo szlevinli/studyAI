@@ -75,20 +75,6 @@ class Test_linear_regression(unittest.TestCase):
         self.assertTrue(
             'or features rows 2 not equals' in context.exception.args[0])
 
-    def test_calc_prediction_price(self):
-        thetas = np.array([1, 0.8, -1.35])
-        features = np.array([
-            [-0.88, 1.35, -0.23],
-            [-0.86, 2.15, -0.22],
-            [-0.84, 2.95, -0.21],
-            [-0.82, 3.75, -0.2],
-            [-0.8, 4.55, -0.19]
-        ])
-        expect = 9.0175
-        result = round(LR.calc_prediction_price(thetas, features), 4)
-
-        self.assertEqual(expect, result)
-
     def test_calc_J_value(self):
         thetas = np.array([1, 0.8, -1.35])
         features = np.array([
@@ -154,6 +140,15 @@ class Test_linear_regression(unittest.TestCase):
             thetas, features, targets, learning_rate), 8)
 
         self.assertTrue(np.array_equal(expect, result))
+
+    def test_normal_equation_raise_exception(self):
+        features = np.reshape(range(10), (2, 5))
+        targets = np.reshape(range(10), (5, 2))
+
+        with self.assertRaises(Exception) as context:
+            LR.normal_equation(features, targets)
+        self.assertTrue(
+            'features rows 2 not equals' in context.exception.args[0])
 
 
 if __name__ == "__main__":
