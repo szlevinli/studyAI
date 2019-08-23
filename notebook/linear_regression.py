@@ -51,16 +51,20 @@ def verify_parameters(thetas, features, targets=None):
     '''
     if targets is None:
         targets = features
+    # 所有参数必须是二维的
     for key, val in locals().items():
         if val.ndim != 2:
             raise Exception(
                 f'{key} dimensions must be 2D'
             )
-    if thetas.shape[0] != features.shape[1] or features.shape[0] != targets.shape[0]:
+    # 参数间维度判读
+    if thetas.shape[0] != features.shape[1]:
         raise Exception(
             f'thetas rows is {thetas.shape[0]} '
-            f'not equals features columns {features.shape[1]} '
-            f'or features rows {features.shape[0]} '
+            f'not equals features columns {features.shape[1]}')
+    if features.shape[0] != targets.shape[0]:
+        raise Exception(
+            f'features rows {features.shape[0]} '
             f'not equals targets rows {targets.shape[0]}')
 
 
