@@ -49,11 +49,16 @@ def verify_parameters(thetas, features, targets=None):
     -------
           None
     '''
+    import inspect
+    # 处理None参数
     if targets is None:
         targets = features
+    # 使用 inspect 包获取函数参数信息
+    frame = inspect.currentframe()
+    args, _, _, values = inspect.getargvalues(frame)
     # 所有参数必须是二维的
-    for key, val in locals().items():
-        if val.ndim != 2:
+    for key in args:
+        if values[key].ndim != 2:
             raise Exception(
                 f'{key} dimensions must be 2D'
             )
