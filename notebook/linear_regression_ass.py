@@ -6,19 +6,45 @@ import pandas as pd
 import linear_regression as LR
 
 
-def gd_1():
+def get_data_from_csv(file_name, feature_fields, targets_fields, frac, **kwargs):
+    """从csv文件中获取数据构建 thetas-系数数组，features-特征数据，targets-真实值
+
+    Arguments:
+        file_name {string} -- 文件名
+        feature_fields {numpy.ndarray<string>(n,)} -- 特征字段名称
+        targets_fields {numpy.ndarray<string>(n,)} -- 真实值字段名称
+        frac {float} -- 从数据集中提取的样本比率(0, 1]
+
+    Returns:
+        numpy.ndarray<float>(n, 1) -- thetas-系数数组
+        numpy.ndarray<float>(m, n) -- features-特征数据
+        numpy.ndarray<float>(m, 1) -- targets-真实值
+    """
     # get data from file
-    df = pd.read_csv('./data/kc_house_data.csv')
+    header = kwargs['header'] if 'header' in kwargs else 0
+    df = pd.read_csv(file_name, header=header)
     # get samples
-    train_set = df.sample(frac=0.2, random_state=1)
+    train_set = df.sample(frac=frac, random_state=1)
     # get features
-    fields = ['sqft_lot', 'sqft_living', 'sqft_above']
+    fields = feature_fields
     features = train_set[fields].values
     # get targets
-    targets = train_set[['price']].values
+    targets = train_set[targets_fields].values
     # set thetas
     # * 根据features的column数来构建
     thetas = np.full((features.shape[1], 1), 0)
+
+    return thetas, features, targets
+
+
+def gd_1():
+    fields = ['sqft_lot', 'sqft_living', 'sqft_above']
+    thetas, features, targets = get_data_from_csv(
+        './data/kc_house_data.csv',
+        fields,
+        ['price'],
+        0.2
+    )
     # normalization
     features = LR.normalization(features)
     # add theta_0 and feature_0
@@ -40,18 +66,14 @@ def gd_1():
 
 
 def gd_2():
-    # get data from file
-    df = pd.read_csv('./data/andrew/exedata1.csv', header=None)
-    # get samples
-    train_set = df
-    # get features
     fields = [0]
-    features = train_set[fields].values
-    # get targets
-    targets = train_set[[1]].values
-    # set thetas
-    # * 根据features的column数来构建
-    thetas = np.full((features.shape[1], 1), 0)
+    thetas, features, targets = get_data_from_csv(
+        './data/andrew/exedata1.csv',
+        fields,
+        [1],
+        1,
+        header=None
+    )
     # normalization
     features = LR.normalization(features)
     # add theta_0 and feature_0
@@ -60,7 +82,7 @@ def gd_2():
     # set learning rate
     learning_rate = 0.01
     # set iterators numbers
-    iterate_num = 5
+    iterate_num = 1500
     # !梯度下降
     J_theta, thetas, plt_J_thetas, plt_thetas = LR.gradient_descent(
         thetas, features, targets, learning_rate, iterate_num)
@@ -72,68 +94,93 @@ def gd_2():
     print(f'thetas {thetas}')
 
 
+def plot_surface3D(theta_0, theta_1, features, targets, split_num):
+    """画 3D surface 和 contour 图
 
-def plot_surface3D():
-    df = pd.read_csv('./data/andrew/exedata1.csv', header=None)
-
-    thetas = np.array([-3.63029144, 1.16636235])
-    features = df[[0]].values
-    features = np.insert(features, 0, 1, axis=1)
-    targets = df[1].values
-    targets = np.reshape(targets, (targets.shape[0], 1))
-
-    X = np.linspace(0, thetas[0], 50)
-    Y = np.linspace(0, thetas[1], 50)
+    Arguments:
+        theta_0 {float} -- theta_0的值
+        theta_1 {float} -- theta_1的值
+        features {numpy.ndarry<float> (m, 2)} -- 特征数据 2D
+        targets {numpy.ndarry<float> (m, 1)} -- 真实值 2D
+        split_num {int} -- theta_0和theta_1的切片数
+    """
+    # x 坐标 theta_0的切片数据
+    X = np.linspace(0, theta_0, split_num)
+    # x 坐标 theta_1的切片数据
+    Y = np.linspace(0, theta_1, split_num)
+    # X 和 Y 的笛卡尔积转换
+    # X 和 Y 转换前的 shape (n,)
+    # X 和 Y 笛卡尔积转换后的 shape (n, n)
     X, Y = np.meshgrid(X, Y)
+    # 打平 X
     X_1 = X.flatten()
+    # 打平 Y
     Y_1 = Y.flatten()
+    # 构建 Thetas 其 shape (2, n*n)
     X_1 = np.reshape(X_1, (1, X_1.shape[0]))
     Y_1 = np.reshape(Y_1, (1, Y_1.shape[0]))
     Thetas = np.append(X_1, Y_1, axis=0)
-
-    # features (97,2)
-    # Thetas (2, 2500)
-    # targets (97, 1)
-    print(f'features {features.shape}')
-    print(f'Thetas {Thetas.shape}')
-    print(f'targets {targets.shape}')
-
+    # *计算预测值 H_theta
+    # features.shape (m, 2) Thetas.shape (2, n)
+    # H.shape (m, n)
     H = features.dot(Thetas)
     H = H - targets
     H = H ** 2 / 2
-    print(f'H {H.shape}')
+    # *计算成本值 J
+    # J.shape (m, n)
     J = np.mean(H, axis=0)
+    # reshape J
     J = np.reshape(J, (50, 50))
-
-    print(f'X {X.shape}')
-    print(f'Y {Y.shape}')
-    print(f'J {J.shape}')
-
-    print(f'X first row is {X[0,:5]}')
-    print(f'Y first row is {Y[0,:5]}')
-    print(f'J first row is {J[0,:5]}')
-
+    # !plot 3D surface and contour
     import matplotlib.pyplot as plt
     from matplotlib import cm
     from mpl_toolkits.mplot3d import Axes3D
     fig = plt.figure()
-    ax = fig.gca(projection='3d')
-
     # Plot the surface
-    surf = ax.plot_surface(X, Y, J, cmap=cm.coolwarm,
-                           linewidth=0, antialiased=False)
-
+    ax1 = fig.add_subplot(121, projection='3d')
+    ax1.plot_surface(X, Y, J, cmap=cm.coolwarm,
+                     linewidth=0, antialiased=False)
     # plot the contour
-    # plt.contour(X, Y, J)
+    ax2 = fig.add_subplot(122)
+    ax2.contour(X, Y, J)
 
     plt.show()
 
 
+def plot_surface3D_1():
+    fields = [0]
+    _, features, targets = get_data_from_csv(
+        './data/andrew/exedata1.csv',
+        fields,
+        [1],
+        1,
+        header=None
+    )
+    # add theta_0 and feature_0
+    features = np.insert(features, 0, 1, axis=1)
+    targets = np.reshape(targets, (targets.shape[0], 1))
+    theta_0 = 5.8391334
+    theta_1 = 4.59303983
+    # plot
+    plot_surface3D(theta_0, theta_1, features, targets, 50)
+
+
+def plot_surface3D_2():
+    fields = ['sqft_living']
+    _, features, targets = get_data_from_csv(
+        './data/kc_house_data.csv',
+        fields,
+        ['price'],
+        0.2
+    )
+    # add theta_0 and feature_0
+    features = np.insert(features, 0, 1, axis=1)
+    targets = np.reshape(targets, (targets.shape[0], 1))
+    theta_0 = 5.8391334
+    theta_1 = 4.59303983
+    # plot
+    plot_surface3D(theta_0, theta_1, features, targets, 50)
+
+
 if __name__ == "__main__":
-    # import io
-    # import sys
-
-    # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')
-
-    # plot_surface3D()
-    gd_1()
+    plot_surface3D_2()
