@@ -15,14 +15,15 @@ def sigmoid(z):
     """
     return 1 / (1 + np.exp(-z))
 
+
 def cost_function(theta, X, y):
     """计算成本函数
-    
+
     Arguments:
         theta {ndarray 1D} -- theta系数 vector
         X {ndarray 2D} -- 特征数据 matrix
         y {ndarray 1D} -- 目标数据 vector
-    
+
     Returns:
         float -- 成本函数计算结果 J scalar
         ndarray 1D -- 梯度值 vector
