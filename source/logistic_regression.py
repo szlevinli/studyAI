@@ -47,3 +47,11 @@ def cost_function(theta, X, y):
     gradient = gradient * (1 / y.shape[0])
 
     return J, gradient
+
+def map_featrue(X1, X2, degree):
+    out = np.ones((X1.shape[1], 1))
+    for i in range(1, degree+1):
+        for j in range(i+1):
+            temp = (X1 ** i(i - j)) * (X2 ** j)
+            out = np.concatenate((out, temp), axis=1)
+    return out
