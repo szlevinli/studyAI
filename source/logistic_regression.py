@@ -49,9 +49,23 @@ def cost_function(theta, X, y):
     return J, gradient
 
 def map_featrue(X1, X2, degree):
-    out = np.ones((X1.shape[1], 1))
+    """特征工程 多项式方法
+    将给定的两个特征进行多项式算法, 得到新的特征从而可以更好的拟合数据
+    算法为: 假设 degree=i, 则返回的结果为
+    X1^i * X2^0, X1^(i-1) * X2^1, X1^(i-2) * X2^2, ..., X^0 * X2^i
+
+    Arguments:
+        X1 {ndarray(n, 1) 2D} -- 特征 X1
+        X2 {ndarray(n, 1) 2D} -- 特征 X2
+        degree {int} -- 多项式的 degree
+
+    Returns:
+        ndarray(n, m) -- 生成的新的特征, 其中 m=1+2+...+degree+degree;
+        比如: degree = 6, 则 m=1+2+3+4+5+6+6=27
+    """
+    out = np.ones((X1.shape[0], 1))
     for i in range(1, degree+1):
         for j in range(i+1):
-            temp = (X1 ** i(i - j)) * (X2 ** j)
+            temp = (X1 ** (i - j)) * (X2 ** j)
             out = np.concatenate((out, temp), axis=1)
     return out

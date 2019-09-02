@@ -54,6 +54,19 @@ class Test_Logistic_Regression(unittest.TestCase):
         self.assertEqual(expect_J, result_J)
         self.assertTrue(np.array_equal(expect_gradient, result_gradient))
 
+    def test_map_featrue(self):
+        X1 = np.reshape(range(1, 4), (3, 1))
+        X2 = np.reshape(range(4, 7), (3, 1))
+
+        expect = np.array([
+            [1, 1, 4, 1, 4, 16, 1, 4, 16, 64],
+            [1, 2, 5, 4, 10, 25, 8, 20, 50, 125],
+            [1, 3, 6, 9, 18, 36, 27, 54, 108, 216]
+        ])
+        result = map_featrue(X1, X2, 3)
+
+        self.assertTrue(np.array_equal(expect, result))
+
 
 if __name__ == '__main__':
     unittest.main()
