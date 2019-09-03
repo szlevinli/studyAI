@@ -53,7 +53,7 @@ def use_cost_function():
         2,
         header=None)
     J, gradient = lr.cost_function(theta, X, y)
-    
+
     print(f'J is {J}')
     print(f'gradient is {gradient}')
 
@@ -64,8 +64,8 @@ def use_scipy_optimize_minimize():
         2,
         header=None)
     theta = np.reshape(theta, (theta.shape[0],))
-    from scipy.optimize import minimize, fmin_bfgs
-    optimize_result = minimize(lr.cost_function2, theta, args=(X, y), jac=lr.gradient)
+    from scipy.optimize import minimize
+    optimize_result = minimize(lr.cost_function_, theta, args=(X, y), jac=lr.gradient)
     for k, v in optimize_result.items():
         print (f'{k} = {v}')
 
