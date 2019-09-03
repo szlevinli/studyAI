@@ -37,8 +37,8 @@ def main():
         [0, 1],
         2,
         header=None)
-    iterator_num = 10000
-    learning_rate = 0.0001
+    iterator_num = 1000000
+    learning_rate = 0.001
     for _ in range(iterator_num):
         J, gradient = lr.cost_function(theta, X, y)
         theta = theta - learning_rate * gradient
@@ -57,7 +57,19 @@ def use_cost_function():
     print(f'J is {J}')
     print(f'gradient is {gradient}')
 
+def use_scipy_optimize_minimize():
+    theta, X, y = get_data(
+        './data/andrew/ex2data1.csv',
+        [0, 1],
+        2,
+        header=None)
+    theta = np.reshape(theta, (theta.shape[0],))
+    from scipy.optimize import minimize, fmin_bfgs
+    optimize_result = minimize(lr.cost_function2, theta, args=(X, y), jac=lr.gradient)
+    for k, v in optimize_result.items():
+        print (f'{k} = {v}')
 
 if __name__ == '__main__':
     # main()
-    use_cost_function()
+    # use_cost_function()
+    use_scipy_optimize_minimize()
