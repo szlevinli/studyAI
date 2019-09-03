@@ -45,5 +45,19 @@ def main():
     print(f'J is {J}')
     print(f'gradient is {gradient}')
 
+
+def use_cost_function():
+    theta, X, y = get_data(
+        './data/andrew/ex2data1.csv',
+        [0, 1],
+        2,
+        header=None)
+    J, gradient = lr.cost_function(theta, X, y)
+    
+    print(f'J is {J}')
+    print(f'gradient is {gradient}')
+
+
 if __name__ == '__main__':
-    main()
+    # main()
+    use_cost_function()
