@@ -2,6 +2,7 @@
 """
 
 import numpy as np
+from decorators import debug
 
 
 def sigmoid(z):
@@ -34,6 +35,7 @@ def cost_function(theta, X, y):
     return J, g
 
 
+# @debug
 def cost_function_(theta, X, y):
     """计算成本函数
 
@@ -121,13 +123,23 @@ def cost_function_reg(theta, X, y, l):
     Returns:
         float -- 成本函数计算结果 J scalar
     """
-    # *使用标准成本函数计算 J value
-    J = cost_function_(theta, X, y)
-    # *计算惩罚项
-    p = (theta[1:] ** 2).sum()
-    p = l * p / 2 * X.shape[0]
+    # *X.shape = (m, n) is 2D
+    # *theta.shape = (n,) is 1D
+    # *y.shape = (m,) is 1D
+    # H_theta_x.shape = (m,) is 1D
+    H_theta_x = sigmoid(X.dot(theta))
+    # temp1.shape = (m,) is 1D
+    temp1 = -1 * (y * np.log(H_theta_x))
+    # temp2.shape = (m,) is 1D
+    temp2 = (1 - y) * np.log(1 - H_theta_x)
+    # calculate correction
+    thetaT = theta
+    thetaT[0] = 0
+    correction = thetaT ** 2 * (l / 2 * X.shape[0] )
+    # J is scalar
+    J = (temp1 - temp2).mean() + correction
 
-    return J + p
+    return J
 
 
 def gradient_reg(theta, X, y, l):
@@ -142,9 +154,19 @@ def gradient_reg(theta, X, y, l):
     Returns:
         ndarray 1D -- 梯度值 vector
     """
-    # *使用标准梯度函数计算梯度值
-    g = gradient(theta, X, y)
-    # *计算 theta_j where j > 0
-    t = g[1:] + l * theta[1:] / X.shape[0]
+    # *X.shape = (m, n) is 2D
+    # *theta.shape = (n,) is 1D
+    # *y.shape = (m,) is 1D
+    # H_theta_x.shape = (m,) is 1D
+    H_theta_x = sigmoid(X.dot(theta))
+    # correction theta
+    thetaT = theta
+    thetaT[0] = 0
+    # X is (m, n) X^T is (n, m) dot (H_theta_x - y) is (m,)
+    # gradient is (n,) because (n, m) dot (m,) is (n,)
+    # 目前 gradient 中放置的是每个特征列的总误差，共 n 列
+    gradient = X.transpose().dot(H_theta_x - y)
+    # 求每个特征列的平均误差
+    gradient = gradient * (1 / y.shape[0]) + thetaT * (l / X.shape[0])
 
-    return np.insert(t, 0, g[0])
+    return gradient

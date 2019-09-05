@@ -45,6 +45,28 @@ def main():
     print(f'J is {J}')
     print(f'gradient is {gradient}')
 
+def main2():
+    theta, X, y = get_data(
+        './data/andrew/ex2data2.csv',
+        [0, 1],
+        2,
+        header=None)
+    iterator_num = 10000
+    learning_rate = 0.001
+    l = 10
+    # map feature
+    X0 = np.reshape(X[:, 0], (X.shape[0], 1))
+    X1 = np.reshape(X[:, 1], (X.shape[0], 1))
+    X = lr.map_featrue(X0, X1, 6)
+    # refactor theta shape
+    theta = np.zeros(X.shape[1])
+    # calculate
+    for _ in range(iterator_num):
+        J = lr.cost_function_reg(theta, X, y, l)
+        gradient = lr.gradient_reg(theta, X, y, l)
+        theta = theta - learning_rate * gradient
+    print(f'J is {J}')
+    print(f'theta is {theta}')
 
 def use_cost_function():
     theta, X, y = get_data(
@@ -57,6 +79,28 @@ def use_cost_function():
     print(f'J is {J}')
     print(f'gradient is {gradient}')
 
+
+def use_cost_function_reg():
+    theta, X, y = get_data(
+        './data/andrew/ex2data1.csv',
+        [0, 1],
+        2,
+        header=None)
+    l = 1
+    # map feature
+    X0 = np.reshape(X[:, 0], (X.shape[0], 1))
+    X1 = np.reshape(X[:, 1], (X.shape[0], 1))
+    X = lr.map_featrue(X0, X1, 6)
+    # refactor theta shape
+    theta = np.zeros(X.shape[1])
+    # calculate
+    J = lr.cost_function_reg(theta, X, y, l)
+    gradient = lr.gradient_reg(theta, X, y, l)
+
+    print(f'J is {J}')
+    print(f'gradient is {gradient}')
+
+
 def use_scipy_optimize_minimize():
     theta, X, y = get_data(
         './data/andrew/ex2data1.csv',
@@ -65,11 +109,34 @@ def use_scipy_optimize_minimize():
         header=None)
     theta = np.reshape(theta, (theta.shape[0],))
     from scipy.optimize import minimize
-    optimize_result = minimize(lr.cost_function_, theta, args=(X, y), jac=lr.gradient)
-    for k, v in optimize_result.items():
-        print (f'{k} = {v}')
+    optimize_result = minimize(
+        lr.cost_function_, theta, args=(X, y), jac=lr.gradient)
+    print(f'optimize_result is\n{optimize_result}')
+
+def get_mini_with_reg():
+    theta, X, y = get_data(
+        './data/andrew/ex2data2.csv',
+        [0, 1],
+        2,
+        header=None)
+    l = 2
+    # map feature
+    X0 = np.reshape(X[:, 0], (X.shape[0], 1))
+    X1 = np.reshape(X[:, 1], (X.shape[0], 1))
+    X = lr.map_featrue(X0, X1, 6)
+    # refactor theta shape
+    theta = np.zeros(X.shape[1])
+    from scipy.optimize import minimize
+    optimize_result = minimize(
+        lr.cost_function_reg, theta, args=(X, y, l), jac=lr.gradient_reg,
+        method='CG')
+    print(f'optimize_result is\n{optimize_result}')
+
 
 if __name__ == '__main__':
     # main()
+    main2()
     # use_cost_function()
-    use_scipy_optimize_minimize()
+    # use_cost_function_reg()
+    # use_scipy_optimize_minimize()
+    # get_mini_with_reg()
