@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import logistic_regression as lr
+from linear_regression import normalization
 
 
 def get_data(filepath, X_field_names_arr, y_field_name, **kwargs):
@@ -51,9 +52,9 @@ def main2():
         [0, 1],
         2,
         header=None)
-    iterator_num = 10000
+    iterator_num = 100000
     learning_rate = 0.001
-    l = 10
+    l = 1
     # map feature
     X0 = np.reshape(X[:, 0], (X.shape[0], 1))
     X1 = np.reshape(X[:, 1], (X.shape[0], 1))
@@ -119,7 +120,7 @@ def get_mini_with_reg():
         [0, 1],
         2,
         header=None)
-    l = 2
+    l = 10
     # map feature
     X0 = np.reshape(X[:, 0], (X.shape[0], 1))
     X1 = np.reshape(X[:, 1], (X.shape[0], 1))
@@ -129,14 +130,14 @@ def get_mini_with_reg():
     from scipy.optimize import minimize
     optimize_result = minimize(
         lr.cost_function_reg, theta, args=(X, y, l), jac=lr.gradient_reg,
-        method='CG')
+        method='BFGS')
     print(f'optimize_result is\n{optimize_result}')
 
 
 if __name__ == '__main__':
     # main()
-    main2()
+    # main2()
     # use_cost_function()
     # use_cost_function_reg()
     # use_scipy_optimize_minimize()
-    # get_mini_with_reg()
+    get_mini_with_reg()
