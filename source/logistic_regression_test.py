@@ -70,28 +70,47 @@ class Test_Logistic_Regression(unittest.TestCase):
         self.assertTrue(np.array_equal(expect, result))
 
     def test_cost_function_reg(self):
-        theta = np.array([1, 2, 3])
-        X = np.ones((100, 3))
-        y = np.ones((100, 1))
+        theta = np.full(5, 0.3)
+        X = np.array([
+            [0.01, 0.02, 0.03, 0.04, 0.05],
+            [0.02, 0.03, 0.04, 0.05, 0.06],
+            [0.03, 0.04, 0.05, 0.06, 0.07],
+            [0.04, 0.05, 0.06, 0.07, 0.08],
+            [0.05, 0.06, 0.07, 0.08, 0.09],
+            [0.06, 0.07, 0.08, 0.09, 0.1]
+        ])
+        y = np.reshape(range(100, 106), 6)
         l = 2.3
-        # * mock
-        lr.cost_function_ = MagicMock(return_value=18)
-        expect = 1513.0
-        result = lr.cost_function_reg(theta, X, y, l)
+        expect_J = -7.68187
 
-        self.assertEqual(expect, result)
+        result_J = lr.cost_function_reg(theta, X, y, l)
+        result_J = round(result_J, 5)
+
+        self.assertEqual(expect_J, result_J)
 
     def test_gradient_reg(self):
-        theta = np.array([1, 2, 3])
-        X = np.ones((100, 3))
-        y = np.ones((100, 1))
+        theta = np.full(5, 0.3)
+        X = np.array([
+            [0.01, 0.02, 0.03, 0.04, 0.05],
+            [0.02, 0.03, 0.04, 0.05, 0.06],
+            [0.03, 0.04, 0.05, 0.06, 0.07],
+            [0.04, 0.05, 0.06, 0.07, 0.08],
+            [0.05, 0.06, 0.07, 0.08, 0.09],
+            [0.06, 0.07, 0.08, 0.09, 0.1]
+        ])
+        y = np.reshape(range(100, 106), 6)
         l = 2.3
-        # * mock
-        lr.gradient = MagicMock(return_value=theta)
-        expect = np.array([1, 2.046, 3.069])
-        result = lr.gradient_reg(theta, X, y, l)
+        expect_gradient = np.array([
+            -3.59833614,
+            -4.503130041,
+            -5.522923941,
+            -6.542717842,
+            -7.562511743
+        ])
+        result_gradient = lr.gradient_reg(theta, X, y, l)
+        result_gradient = np.round(result_gradient, 9)
 
-        self.assertTrue(np.array_equal(expect, result))
+        self.assertTrue(np.array_equal(expect_gradient, result_gradient))
 
 
 if __name__ == '__main__':
