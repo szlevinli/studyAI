@@ -83,7 +83,7 @@ def gradient(theta, X, y):
     # 目前 gradient 中放置的是每个特征列的总误差，共 n 列
     gradient = X.transpose().dot(H_theta_x - y)
     # 求每个特征列的平均误差
-    gradient = gradient * (1 / y.shape[0])
+    gradient = gradient / X.shape[0]
 
     return gradient
 
@@ -135,7 +135,8 @@ def cost_function_reg(theta, X, y, l):
     # calculate correction
     thetaT = np.copy(theta)
     thetaT[0] = 0
-    correction = (thetaT ** 2).sum() * l / 2 * X.shape[0]
+    # correction = (thetaT ** 2).sum() * l / 2 * X.shape[0]
+    correction = (l / (2 * X.shape[0])) * (thetaT ** 2).sum()
     # J is scalar
     J = (temp1 - temp2).mean() + correction
 
@@ -162,13 +163,14 @@ def gradient_reg(theta, X, y, l):
     # correction correction
     thetaT = np.copy(theta)
     thetaT[0] = 0
-    correction = l * thetaT / X.shape[0]
+    # correction = l * thetaT / X.shape[0]
+    correction = (l / X.shape[0]) * thetaT
     # X is (m, n) X^T is (n, m) dot (H_theta_x - y) is (m,)
     # gradient is (n,) because (n, m) dot (m,) is (n,)
     # 目前 gradient 中放置的是每个特征列的总误差，共 n 列
-    gradient = X.transpose().dot(H_theta_x - y)
+    gradient = X.transpose().dot((H_theta_x - y))
     # 求每个特征列的平均误差
-    gradient = gradient * (1 / y.shape[0])
+    gradient = gradient / X.shape[0]
     # regular gradient
     gradient = gradient + correction
 
