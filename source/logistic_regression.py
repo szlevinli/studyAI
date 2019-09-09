@@ -135,7 +135,7 @@ def cost_function_reg(theta, X, y, l):
     # calculate correction
     thetaT = np.copy(theta)
     thetaT[0] = 0
-    correction = (thetaT ** 2).mean() * l / 2
+    correction = (thetaT ** 2).sum() * l / 2 * X.shape[0]
     # J is scalar
     J = (temp1 - temp2).mean() + correction
 

@@ -120,7 +120,7 @@ def get_mini_with_reg():
         [0, 1],
         2,
         header=None)
-    l = 10
+    l = 1
     # map feature
     X0 = np.reshape(X[:, 0], (X.shape[0], 1))
     X1 = np.reshape(X[:, 1], (X.shape[0], 1))
@@ -129,8 +129,7 @@ def get_mini_with_reg():
     theta = np.zeros(X.shape[1])
     from scipy.optimize import minimize
     optimize_result = minimize(
-        lr.cost_function_reg, theta, args=(X, y, l), jac=lr.gradient_reg,
-        method='BFGS')
+        lr.cost_function_reg, theta, args=(X, y, l), jac=lr.gradient_reg)
     print(f'optimize_result is\n{optimize_result}')
 
 
