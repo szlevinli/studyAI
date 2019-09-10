@@ -26,7 +26,7 @@ def one_vs_all(X, y, num_labels, lbd):
 
     for i in range(num_labels):
         init_theta = np.zeros((n+1))
-        R = minimize(cost_function_reg, init_theta, args=(X, (y == i), lbd), jac=gradient_reg)
+        R = minimize(cost_function_reg, init_theta, args=(X, (y % num_labels == i), lbd), jac=gradient_reg)
         if not R.success:
             raise Exception(f'minimize optimize fail, message is {R.message}')
         all_theta[i, :] = R.x.T

@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.io as sio
+from logistic_regression import sigmoid
 from one_vs_all_classifiers import one_vs_all
 
 if __name__ == "__main__":
@@ -14,5 +15,5 @@ if __name__ == "__main__":
     print(f'all_theta is {all_theta}')
 
     x1 = np.insert(X[0, :], 0, 1)
-    result = all_theta @ x1
+    result = sigmoid(all_theta @ x1)
     print(f'x1 predict is {result}')
