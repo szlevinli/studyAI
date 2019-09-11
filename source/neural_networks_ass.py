@@ -27,6 +27,7 @@ if __name__ == "__main__":
     y_ = y[indices, :]
     y_ = np.reshape(y_, y_.shape[0])
 
+    # 因为真实值是1-10，而返回的最大值索引是0-9，因此需要加1
     p = predict(theta1, theta2, X_) + 1
 
     print(f'{"p is":>18} {p}')
