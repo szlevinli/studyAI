@@ -43,7 +43,7 @@ def compute_cost():
     input_layer_size = X.shape[1]
     hidden_layer_size = 25
     num_labels = 10
-    lbd = 0
+    lbd = 1
 
     J = nn_cost_function(nn_weights, input_layer_size,
                          hidden_layer_size, num_labels, X, y, lbd)

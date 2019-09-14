@@ -54,8 +54,6 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
     #! 需要用到的数据
     # 输入数据的记录数（行数）
     m = X.shape[0]
-    # 输入数据的特征数（列数）
-    n = X.shape[1]
     # 将真实值 y 映射成 vector
     # y 的值域是 [1, 10]
     # y = 1 map to [True, False, False, False, False, False, False, False,False, False]
@@ -88,6 +86,19 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
     temp2 = (1 - y_) * np.log(1 - H_theta_x)
     J_ = temp1 - temp2
     J_ = J_.sum(axis=1)
-
     J = J_.mean()
-    return J
+
+    #! compute regularization
+    # theta 的 第一列即 偏置单元 的 theta 不参与, 因此需要置为 0
+    T1 = np.copy(theta1)
+    T1[:, 0] = 0
+    T2 = np.copy(theta2)
+    T2[:, 0] = 0
+    # computer correction
+    temp1 = T1 ** 2
+    temp1 = temp1.sum()
+    temp2 = T2 ** 2
+    temp2 = temp2.sum()
+    correction = (lbd / (2 * m)) * (temp1 + temp2)
+
+    return J + correction
