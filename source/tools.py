@@ -78,6 +78,21 @@ def map_featrue(X1, X2, degree):
     return out
 
 
+def random_initialize_nn_weights(input_layer_size, output_layer_size):
+    """随机初始化神经网络权重
+    首先确定一个值 epsilon 其计算公式为 根号6 / 根号(input_layer_size + output_layer_size)
+    接着生成平均分布随机数，取值范围在 [0, 1]
+    最后使用 [0, 1] * 2 * epsilon - epsilon 来得到随机初始化数据取值范围 [-epsilon, epsilon]
+
+    Arguments:
+        input_layer_size {int} -- 权重所关联的映射输入层，注意不是整个神经网络中所指的输入层
+        output_layer_size {int} -- 权重所关联的映射输出层，注意不是整个神经网络中所指的输出层
+    """
+    epsilon = np.sqrt(6) / np.sqrt(input_layer_size + output_layer_size)
+
+    thetas = np.random.rand(output_layer_size, input_layer_size + 1)
+    thetas = thetas * 2 * epsilon - epsilon
+
 # def map_thetas(nn_weights, nn_layers):
 #     start_size = 0
 #     thetas = np.array([])
