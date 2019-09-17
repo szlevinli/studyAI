@@ -2,7 +2,7 @@
 """
 
 import numpy as np
-from logistic_regression import sigmoid
+from tools import sigmoid, sigmoid_gradient
 
 
 def predict(theta1, theta2, X):
@@ -51,6 +51,11 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
     Returns:
         float -- 残值 residual
     """
+    #####################################
+    #
+    # Part 1: Compute cost
+    #
+    #####################################
     #! 需要用到的数据
     # 输入数据的记录数（行数）
     m = X.shape[0]
@@ -59,33 +64,47 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
     # y = 1 map to [True, False, False, False, False, False, False, False,False, False]
     # y = 5 map to [False, False, False, False,  True, False, False, False, False, False]
     # y = 10 map to [False, False, False, False, False, False, False, False, False, True]
+    # y_ = (m, l3)
     y_ = y == np.arange(1, num_labels + 1)
     # Reshape nn_weights to theta1 and theta2
+    # theta1 = (l2, l1+1)
     theta1 = np.reshape(nn_weights[:hidden_layer_size * (
         input_layer_size + 1)], (hidden_layer_size, input_layer_size + 1))
+    # theta2 = (l3, l2+1)
     theta2 = np.reshape(nn_weights[hidden_layer_size * (
         input_layer_size + 1):], (num_labels, hidden_layer_size + 1))
 
     #! from layer 1 map to layer2
     # add bias
+    # a1 = (m, l1+1)
     a1 = np.concatenate((np.ones((m, 1)), X), axis=1)
+    # z2 = (m, l1+1) @ (l1+1, l2) = (m, l2)
     z2 = a1 @ theta1.T
+    # a2 = (m, l2)
     a2 = sigmoid(z2)
     #! from layer 2 map to layer3
     # add bias
+    # a2 = (m, l2+1)
     a2 = np.concatenate((np.ones((m, 1)), a2), axis=1)
+    # z3 = (m, l2+1) @ (l2+1, l3) = (m, l3)
     z3 = a2 @ theta2.T
+    # a3 = (m, l3)
     a3 = sigmoid(z3)
-
+    # H_theta_x = (m, l3)
     H_theta_x = a3
 
-    #! compute residual
+    #! compute cost
     # y_ shape is (m, num_labels)
     # H_theta_x shape is (m, num_labels)
+    # temp1 = (m, l3)
     temp1 = -1 * y_ * np.log(H_theta_x)
+    # temp1 = (m, l3)
     temp2 = (1 - y_) * np.log(1 - H_theta_x)
+    # J_ = (m, l3)
     J_ = temp1 - temp2
+    # J_ = (m,)
     J_ = J_.sum(axis=1)
+    # J is scalar
     J = J_.mean()
 
     #! compute regularization
@@ -101,4 +120,53 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
     temp2 = temp2.sum()
     correction = (lbd / (2 * m)) * (temp1 + temp2)
 
-    return J + correction
+    J = J + correction
+
+    #####################################
+    #
+    # Part 2: Compute gradient
+    #
+    #####################################
+    # delta1 = (l2, l1+1)
+    delta1 = np.zeros(theta1.shape)
+    # delta2 = (l3, l2+1)
+    delta2 = np.zeros(theta2.shape)
+    for t in range(m):
+        # a1t = (1, l1+1)
+        a1t = a1[t, :]
+        # z2t = (1, l2)
+        z2t = z2[t, :]
+        # z2t = (1, l2+1)
+        z2t = np.concatenate(([[1]], z2t), axis=1)
+        # a2t = (1, l2+1)
+        a2t = a2[t, :]
+        # a3t = (1, l3)
+        a3t = a3[t, :]
+        # y_t = (1, l3)
+        y_t = y_[t, :]
+
+        # d3t = (1, l3)
+        d3t = a3t - y_t
+        # d2t = (l2+1, l3) @ (l3, 1) * (l2+1, 1) = (l2+1, 1)
+        d2t = (theta2.T @ d3t.T) * sigmoid_gradient(z2t).T
+        # d2t = (l2, 1)
+        d2t = d2t[1:]
+
+        # delta1 = (l2, l1+1) + (l2, 1) @ (1, l1+1)
+        #        = (l2, l1+1) + (l2, l1+1)
+        #        = (l2, l1+1)
+        delta1 = delta1 + d2t @ a1t
+        # delta2 = (l3, l2+1) + (l3, 1) @ (1, l2+1)
+        #        = (l3, l2+1) + (l3, l2+1)
+        #        = (l3, l2+1)
+        delta2 = delta2 + d3t.T @ a2t
+    
+    delta1_gradient = (1 / m) * delta1
+    delta2_gradient = (1 / m) * delta2
+
+    delta1_gradient = delta1_gradient.flatten()
+    delta2_gradient = delta2_gradient.flatten()
+
+    grad = np.concatenate((delta1_gradient, delta2_gradient))
+
+    return J, grad
