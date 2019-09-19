@@ -133,24 +133,24 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
     delta2 = np.zeros(theta2.shape)
     for t in range(m):
         # a1t = (1, l1+1)
-        a1t = a1[t, :]
+        a1t = a1[np.newaxis, t, :]
         # z2t = (1, l2)
-        z2t = z2[t, :]
+        z2t = z2[np.newaxis, t, :]
         # z2t = (1, l2+1)
         z2t = np.concatenate(([[1]], z2t), axis=1)
         # a2t = (1, l2+1)
-        a2t = a2[t, :]
+        a2t = a2[np.newaxis, t, :]
         # a3t = (1, l3)
-        a3t = a3[t, :]
+        a3t = a3[np.newaxis, t, :]
         # y_t = (1, l3)
-        y_t = y_[t, :]
+        y_t = y_[np.newaxis, t, :]
 
         # d3t = (1, l3)
         d3t = a3t - y_t
         # d2t = (l2+1, l3) @ (l3, 1) * (l2+1, 1) = (l2+1, 1)
         d2t = (theta2.T @ d3t.T) * sigmoid_gradient(z2t).T
         # d2t = (l2, 1)
-        d2t = d2t[1:]
+        d2t = d2t[1:, :]
 
         # delta1 = (l2, l1+1) + (l2, 1) @ (1, l1+1)
         #        = (l2, l1+1) + (l2, l1+1)
@@ -161,8 +161,23 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
         #        = (l3, l2+1)
         delta2 = delta2 + d3t.T @ a2t
     
+    # delta1_gradient = scalar * (l2, l1+1)
+    #                 = (l2, l1+1)
     delta1_gradient = (1 / m) * delta1
+    # delta2_gradient = scalar * (l3, l2+1)
+    #                 = (l3, l2+1)
     delta2_gradient = (1 / m) * delta2
+
+    #! compute regularization for gradient
+    # delta1_gradient_correction = scalar * (l2, l1+1)
+    #                            = (l2, l1+1)
+    delta1_gradient_correction = (lbd / m) * T1
+    # delta2_gradient_correction = scalar * (l3, l2+1)
+    #                            = (l3, l2+1)
+    delta2_gradient_correction = (lbd / m) * T2
+
+    delta1_gradient = delta1_gradient + delta1_gradient_correction
+    delta2_gradient = delta2_gradient + delta2_gradient_correction
 
     delta1_gradient = delta1_gradient.flatten()
     delta2_gradient = delta2_gradient.flatten()
