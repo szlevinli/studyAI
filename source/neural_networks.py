@@ -37,7 +37,7 @@ def predict(theta1, theta2, X):
 
 
 def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels, X, y, lbd):
-    """计算神经网络成本值
+    """计算神经网络（3层）成本值和权重梯度
 
     Arguments:
         nn_weights {vector} -- 权重向量
@@ -49,11 +49,12 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
         lbd {float} -- 惩罚项系数
 
     Returns:
-        float -- 残值 residual
+        float -- cost
+        matrix -- gradients
     """
     #####################################
     #
-    # Part 1: Compute cost
+    # Part 1: Compute cost (Feedforward)
     #
     #####################################
     #! 需要用到的数据
@@ -124,7 +125,7 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
 
     #####################################
     #
-    # Part 2: Compute gradient
+    # Part 2: Compute gradient (Backpropagation)
     #
     #####################################
     # delta1 = (l2, l1+1)
@@ -182,6 +183,45 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
     delta1_gradient = delta1_gradient.flatten()
     delta2_gradient = delta2_gradient.flatten()
 
-    grad = np.concatenate((delta1_gradient, delta2_gradient))
+    gradients = np.concatenate((delta1_gradient, delta2_gradient))
 
-    return J, grad
+    return J, gradients
+
+
+def nn_cost(nn_weights, input_layer_size, hidden_layer_size, num_labels, X, y, lbd):
+    """计算神经网络（3层）成本值
+
+    Arguments:
+        nn_weights {vector} -- 权重向量
+        input_layer_size {int} -- 输入层单元个数
+        hidden_layer_size {int} -- 隐藏层单元个数
+        num_labels {int} -- 分类标签数，同时也是输出层单元个数
+        X {matrix} -- 输入值/特征值
+        y {vector} -- 真实值 shape 需要用 2D 形式
+        lbd {float} -- 惩罚项系数
+
+    Returns:
+        float -- cost
+    """
+    J, _ = nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels, X, y, lbd)
+
+    return J
+
+def nn_gradient(nn_weights, input_layer_size, hidden_layer_size, num_labels, X, y, lbd):
+    """计算神经网络（3层）权重梯度
+
+    Arguments:
+        nn_weights {vector} -- 权重向量
+        input_layer_size {int} -- 输入层单元个数
+        hidden_layer_size {int} -- 隐藏层单元个数
+        num_labels {int} -- 分类标签数，同时也是输出层单元个数
+        X {matrix} -- 输入值/特征值
+        y {vector} -- 真实值 shape 需要用 2D 形式
+        lbd {float} -- 惩罚项系数
+
+    Returns:
+        matrix -- gradients
+    """
+    _, gradients = nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels, X, y, lbd)
+
+    return gradients

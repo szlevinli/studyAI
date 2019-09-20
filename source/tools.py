@@ -39,12 +39,12 @@ def normalization(arr):
 
     Parameters
     ----------
-    s: numpy.ndarry[float]
+    s: numpy.ndarray[float]
        需正则化的数据, 支持二维数组
 
     Returns
     -------
-    numpy.ndarry[float]
+    numpy.ndarray[float]
           正则化后的数据
     '''
     arr_std = np.apply_along_axis(np.std, 0, arr)
@@ -79,7 +79,7 @@ def map_featrue(X1, X2, degree):
 
 
 def random_initialize_nn_weights(input_layer_size, output_layer_size):
-    """随机初始化神经网络权重
+    """生成神经网络随机初始化权重
     首先确定一个值 epsilon 其计算公式为 根号6 / 根号(input_layer_size + output_layer_size)
     接着生成平均分布随机数，取值范围在 [0, 1]
     最后使用 [0, 1] * 2 * epsilon - epsilon 来得到随机初始化数据取值范围 [-epsilon, epsilon]
@@ -87,16 +87,54 @@ def random_initialize_nn_weights(input_layer_size, output_layer_size):
     Arguments:
         input_layer_size {int} -- 权重所关联的映射输入层，注意不是整个神经网络中所指的输入层
         output_layer_size {int} -- 权重所关联的映射输出层，注意不是整个神经网络中所指的输出层
+
+    Returns:
+        matrix -- 神经网络初始化参数，shape is (input_layer_size, output_layer_size + 1)
     """
     epsilon = np.sqrt(6) / np.sqrt(input_layer_size + output_layer_size)
 
     thetas = np.random.rand(output_layer_size, input_layer_size + 1)
     thetas = thetas * 2 * epsilon - epsilon
 
-# def map_thetas(nn_weights, nn_layers):
-#     start_size = 0
-#     thetas = np.array([])
-#     for layer_sizes in nn_layers:
-#         theta = np.reshape(nn_weights[start_size:layer_sizes[0] * (
-#         layer_sizes[1] + 1)], (layer_sizes[0], layer_sizes[1] + 1))
-#         thetas = np.concatenate((theta, thetas))
+    return thetas
+
+def debug_initialize_nn_weights(input_layer_size, output_layer_size):
+    """生成调试用神经网络初始化权重
+    
+    Arguments:
+        input_layer_size {int} -- 权重所关联的映射输入层，注意不是整个神经网络中所指的输入层
+        output_layer_size {int} -- 权重所关联的映射输出层，注意不是整个神经网络中所指的输出层
+    
+    Returns:
+        matrix -- 神经网络初始化参数，shape is (input_layer_size, output_layer_size + 1)
+    """
+    rows = output_layer_size
+    columns = input_layer_size + 1
+    x = np.arange(1, rows * columns + 1)
+    x = np.reshape(x, (rows, columns))
+
+    return np.sin(x)
+
+
+def compute_numerical_nn_gradient(J, theta):
+    """用于神经网络梯度（backpropagation）检测的数字化梯度计算
+    
+    Arguments:
+        J {Function} -- 神经网络成本函数
+        theta {matrix} -- 神经网络权重
+    
+    Returns:
+        matrix -- 数字化梯度
+    """
+    numerical_gradient = np.zeros(theta.size)
+    perturbation = np.zeros(theta.size)
+    e = 1e-4
+
+    for i in range(theta.size + 1):
+        perturbation[i] = e
+        loss1 = J(theta - perturbation)
+        loss2 = J(theta + perturbation)
+        numerical_gradient[i] = (loss2 - loss1) / (2 * e)
+        perturbation[i] = 0
+    
+    return numerical_gradient

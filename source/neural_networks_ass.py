@@ -1,7 +1,8 @@
 # pylint: disable=unbalanced-tuple-unpacking
 import scipy.io as sio
 import numpy as np
-from neural_networks import predict, nn_cost_function
+from neural_networks import predict, nn_cost, nn_gradient
+from tools import random_initialize_nn_weights, debug_initialize_nn_weights
 
 
 def get_data_from_mat_file(file_path, *args):
@@ -35,7 +36,7 @@ def predict_digit():
     print(f'{"actural value is":>18} {y_}')
 
 
-def compute_cost():
+def compute_cost_and_gradient():
     X, y = get_data('./data/andrew/ex4data1.mat')
     theta1, theta2 = get_weights('./data/andrew/ex4weights.mat')
 
@@ -45,12 +46,16 @@ def compute_cost():
     num_labels = 10
     lbd = 1
 
-    J = nn_cost_function(nn_weights, input_layer_size,
+    J = nn_cost(nn_weights, input_layer_size,
                          hidden_layer_size, num_labels, X, y, lbd)
 
     print(f'J is {J}')
 
+    gradient = nn_gradient(nn_weights, input_layer_size,
+                         hidden_layer_size, num_labels, X, y, lbd)
+    print(f'Gradient is {gradient}')
+
 
 if __name__ == "__main__":
     # predict_digit()
-    compute_cost()
+    compute_cost_and_gradient()
