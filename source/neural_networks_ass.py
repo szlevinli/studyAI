@@ -56,6 +56,9 @@ def compute_cost_and_gradient():
     print(f'Gradient is {gradient}')
 
 
+def check_nn_gradients(lbd=0):
+    pass
+
 if __name__ == "__main__":
     # predict_digit()
     compute_cost_and_gradient()
