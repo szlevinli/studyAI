@@ -60,12 +60,16 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
     #! 需要用到的数据
     # 输入数据的记录数（行数）
     m = X.shape[0]
-    # 将真实值 y 映射成 vector
-    # y 的值域是 [1, 10]
-    # y = 1 map to [True, False, False, False, False, False, False, False,False, False]
-    # y = 5 map to [False, False, False, False,  True, False, False, False, False, False]
-    # y = 10 map to [False, False, False, False, False, False, False, False, False, True]
-    # y_ = (m, l3)
+    # 将vector y(必须是 2D) 中的每个元素 映射成逻辑数组
+    # 比如 y = [[1],
+    #          [2],
+    #          [2],
+    #          [3]]
+    # 映射后的逻辑数组如下
+    # y_ = [[True, False, False],  ## 1
+    #        [False, True, False], ## 2
+    #        [False, True, False], ## 2
+    #        [False, False, True]] ## 3
     y_ = y == np.arange(1, num_labels + 1)
     # Reshape nn_weights to theta1 and theta2
     # theta1 = (l2, l1+1)
@@ -161,7 +165,7 @@ def nn_cost_function(nn_weights, input_layer_size, hidden_layer_size, num_labels
         #        = (l3, l2+1) + (l3, l2+1)
         #        = (l3, l2+1)
         delta2 = delta2 + d3t.T @ a2t
-    
+
     # delta1_gradient = scalar * (l2, l1+1)
     #                 = (l2, l1+1)
     delta1_gradient = (1 / m) * delta1
