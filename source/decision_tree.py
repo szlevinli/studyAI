@@ -130,7 +130,7 @@ def node(df, parent_node='',is_root=False):
 
     if df.shape[0] <= 2 or df['好瓜'].nunique() == 1:
         msg = 'Leaf Node'
-        print(f'{"="*15} {msg} {"="*15}')
+        print(f'{msg:=^100}')
         print(df)
         return
     else:
@@ -141,7 +141,8 @@ def node(df, parent_node='',is_root=False):
         e = information_gain(df, i)
         column_gains[i] = e
     next_node = max(column_gains.keys(), key=lambda key: column_gains[key])
-    print(f'{"="*15} {msg}(分类标识: {next_node}) {"="*15}')
+    msg = f'{msg}(分类标识: {next_node})'
+    print(f'{msg:=^100}')
     print(df)
     split_frames = [frame for _, frame in df.groupby(next_node)]
     for frame in split_frames:
