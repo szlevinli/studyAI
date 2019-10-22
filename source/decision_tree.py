@@ -38,7 +38,7 @@ vec_information_entropy = np.vectorize(information_entropy)
 
 def weight_information_entropy(x, x_sum):
     """集合中 a 属性的权重信息熵
-    
+
     Arguments:
         x {ndarray 1D} -- 集合中属性 a 的第 k 的分类情况。比如：'色泽' 属性，他的 '乌黑' 分类情况是
                           ------------------------
@@ -48,7 +48,7 @@ def weight_information_entropy(x, x_sum):
                           ------------------------
                           则 x = [4,2]
         x_sum {float} -- 集合中属性 a 的分类数合计，比如上面的列子，x_sum = 17
-    
+
     Returns:
         float -- 集合中 a 属性的权重信息熵
     """
@@ -81,7 +81,7 @@ def weight_information_entropy(x, x_sum):
 #                          青绿      3          3
 #                          ------------------------
 #     input  -> ([[4,2],[1,4],[3,3]], 17)
-#     output -> [weight_information_entropy([4,2], 17), 
+#     output -> [weight_information_entropy([4,2], 17),
 #                weight_information_entropy([1,4], 17),
 #                weight_information_entropy([3,3], 17)]
 #
@@ -90,11 +90,11 @@ vec_weight_information_entropy = np.vectorize(weight_information_entropy, signat
 
 def information_gain(df, index_name):
     """计算信息增益（information gain）
-    
+
     Arguments:
         df {DataFrame} -- 数据集
         index_name {string} -- 需要计算信息增益的数据集中的字段名称
-    
+
     Returns:
         float -- 给定字段的信息增益值
     """
@@ -126,10 +126,43 @@ def information_gain(df, index_name):
     return D_entropy - a_entropy
 
 
-if __name__ == "__main__":
-    df = pd.read_excel('./data/choice_watermelon.xlsx')
-    print(f'df.columns is {df.columns[1:-1]}')
+def node(df, parent_node='',is_root=False):
+
+    if df.shape[0] <= 2 or df['好瓜'].nunique() == 1:
+        msg = 'Leaf Node'
+        print(f'{"="*15} {msg} {"="*15}')
+        print(df)
+        return
+    else:
+        msg = 'Root Node' if is_root else 'Decision Node'
+
+    column_gains = {}
     for i in df.columns[1:-1]:
         e = information_gain(df, i)
-        print(f'{i} information gain is {e}')
+        column_gains[i] = e
+    next_node = max(column_gains.keys(), key=lambda key: column_gains[key])
+    print(f'{"="*15} {msg}(分类标识: {next_node}) {"="*15}')
+    print(df)
+    split_frames = [frame for _, frame in df.groupby(next_node)]
+    for frame in split_frames:
+        # print(frame)
+        node(frame)
+
+
+if __name__ == "__main__":
+    df = pd.read_excel('./data/choice_watermelon.xlsx')
+    node(df, is_root=True)
+    # print(df['好瓜'].nunique())
+    # print(df.shape[0])
+    # print(f'df.columns is {df.columns[1:-1]}')
+    # column_gains = {}
+    # for i in df.columns[1:-1]:
+    #     e = information_gain(df, i)
+    #     column_gains[i] = e
+    #     print(f'{i} information gain is {e}')
+    # next_node = max(column_gains.keys(), key=lambda key: column_gains[key])
+    # print(f'next node column name is {next_node}')
+    # split_frames = [frame for _, frame in df.groupby(next_node)]
+    # for frame in split_frames:
+    #     print(frame)
 
