@@ -40,15 +40,13 @@ def weight_information_entropy(x, x_sum):
     """集合中 a 属性的权重信息熵
     
     Arguments:
-        x {ndarray 2D} -- 集合中属性 a 的分类情况。比如：'色泽' 属性，他的分类情况是
+        x {ndarray 1D} -- 集合中属性 a 的第 k 的分类情况。比如：'色泽' 属性，他的 '乌黑' 分类情况是
                           ------------------------
                           色泽    是好瓜     不是好瓜
                           ------------------------
                           乌黑      4          2
-                          浅白      1          4
-                          青绿      3          3
                           ------------------------
-                          x = [[4,2],[1,4],[3,3]]
+                          则 x = [4,2]
         x_sum {float} -- 集合中属性 a 的分类数合计，比如上面的列子，x_sum = 17
     
     Returns:
@@ -68,18 +66,60 @@ def weight_information_entropy(x, x_sum):
 # vec_weight_information_entropy 函数可用于数组，在数组的每个元素上执行
 # weight_information_entropy 函数
 #
+# numpy 库 vectorize 函数的 signature 属性用于说明被封装的函数（这里是 weight_information_entropy)
+# 的规范（签名）要求，本例中设置为 (i),()->() 意思是 weight_information_entropy 函数接收两个参数和一个
+# 返回结果，其中第一个参数是一维的,，第二个参数是标量，返回值是标量。这样设置的目的是让 weight_information_entropy
+# 函数的第一个参数被解析为一维数据，否则默认情况下会按标量处理。
+#
 # e.g.
-#     input -> ([2, 3], 5)
-#     output -> [information_entropy_2(2, 5), information_entropy_2(3, 5)]
+#        集合中属性 a 的分类情况。比如：'色泽' 属性，他的分类情况是
+#                          ------------------------
+#                          色泽    是好瓜     不是好瓜
+#                          ------------------------
+#                          乌黑      4          2
+#                          浅白      1          4
+#                          青绿      3          3
+#                          ------------------------
+#     input  -> ([[4,2],[1,4],[3,3]], 17)
+#     output -> [weight_information_entropy([4,2], 17), 
+#                weight_information_entropy([1,4], 17),
+#                weight_information_entropy([3,3], 17)]
 #
 ###############################################################
 vec_weight_information_entropy = np.vectorize(weight_information_entropy, signature='(i),()->()')
 
 def information_gain(df, index_name):
+    """计算信息增益（information gain）
+    
+    Arguments:
+        df {DataFrame} -- 数据集
+        index_name {string} -- 需要计算信息增益的数据集中的字段名称
+    
+    Returns:
+        float -- 给定字段的信息增益值
+    """
+    # 对给定的 DataFrame 进行旋转动作，实现分类汇总
+    # 索引列为传入的 index_name
+    # 交叉列为字段 '好瓜'
+    # 数据为 '编号'
+    # 聚合函数为 count 计数
+    # 输出结果：
+    # ------------------------
+    #     好瓜
+    # 色泽      是        不是
+    # ------------------------
+    # 乌黑      4          2
+    # 浅白      1          4
+    # 青绿      3          3
+    # ------------------------
     df_ = df.pivot_table(index=[index_name], columns=[
                          '好瓜'], values=['编号'], aggfunc=['count'])
+    # 处理空值
+    # 分类汇总会出现空值情况，比如 '敲声' 是 '清脆' 没有 '好瓜' 为 '是' 的，将会出现空值
     df_ = df_.fillna(0)
+    # 将 DataFrame 转换为 numpy 的 ndarray
     a = df_.values
+    # 按行汇总，求得好瓜或坏瓜
     a_sum = a.sum(axis=0)
     D_entropy = vec_information_entropy(a_sum, a_sum.sum()).sum() * -1
     a_entropy = vec_weight_information_entropy(a, a.sum()).sum()
