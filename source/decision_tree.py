@@ -59,6 +59,7 @@ def weight_information_entropy(x, x_sum):
     # 集合中 a 属性占整个集合的权重信息熵
     return probability * entropy
 
+
 ###############################################################
 #
 # 向量化 weight_information_entropy 函数，求集合中 a 属性的权重信息熵
@@ -86,7 +87,9 @@ def weight_information_entropy(x, x_sum):
 #                weight_information_entropy([3,3], 17)]
 #
 ###############################################################
-vec_weight_information_entropy = np.vectorize(weight_information_entropy, signature='(i),()->()')
+vec_weight_information_entropy = np.vectorize(
+    weight_information_entropy, signature='(i),()->()')
+
 
 def information_gain(df, index_name):
     """计算信息增益（information gain）
@@ -126,33 +129,46 @@ def information_gain(df, index_name):
     return D_entropy - a_entropy
 
 
-def node(df, parent_node='',is_root=False):
+def ID3(df, name='', parent_name='', is_root=False, level=0):
 
-    if df.shape[0] <= 2 or df['好瓜'].nunique() == 1:
-        msg = 'Leaf Node'
+    def pt(msg, df):
         print(f'{msg:=^100}')
         print(df)
-        return
+    
+    is_leaf = df.shape[0] <= 2 or df['好瓜'].nunique() == 1
+    node_type = ''
+    # Node Type
+    if is_root:
+        node_type = 'Root Node'
+    elif is_leaf:
+        node_type = 'Leaf Node'
     else:
-        msg = 'Root Node' if is_root else 'Decision Node'
+        node_type = 'Decision Node'
+
+    msg = f'{name} | {node_type} | {parent_name}'
+
+    if is_leaf:
+        pt(msg, df)
+        return
 
     column_gains = {}
     for i in df.columns[1:-1]:
         e = information_gain(df, i)
         column_gains[i] = e
-    next_node = max(column_gains.keys(), key=lambda key: column_gains[key])
-    msg = f'{msg}(分类标识: {next_node})'
-    print(f'{msg:=^100}')
-    print(df)
-    split_frames = [frame for _, frame in df.groupby(next_node)]
+    split_attribute = max(column_gains.keys(), key=lambda key: column_gains[key])
+    pt(msg, df)
+    split_frames = [frame for _, frame in df.groupby(split_attribute)]
+    level_ = level + 1
+    num = 0
     for frame in split_frames:
-        # print(frame)
-        node(frame)
+        new_name = f'{level_:02d}{num:02d}({split_attribute})'
+        ID3(frame, name=new_name, parent_name=name, is_root=False, level=level_)
+        num =+ 1
 
 
 if __name__ == "__main__":
     df = pd.read_excel('./data/choice_watermelon.xlsx')
-    node(df, is_root=True)
+    ID3(df, name='Root', parent_name='Null', is_root=True, level=0)
     # print(df['好瓜'].nunique())
     # print(df.shape[0])
     # print(f'df.columns is {df.columns[1:-1]}')
@@ -166,4 +182,3 @@ if __name__ == "__main__":
     # split_frames = [frame for _, frame in df.groupby(next_node)]
     # for frame in split_frames:
     #     print(frame)
-
