@@ -159,11 +159,9 @@ def ID3(df, name='', parent_name='', is_root=False, level=0):
     pt(msg, df)
     split_frames = [frame for _, frame in df.groupby(split_attribute)]
     level_ = level + 1
-    num = 0
-    for frame in split_frames:
-        new_name = f'{level_:02d}{num:02d}({split_attribute})'
+    for idx, frame in enumerate(split_frames):
+        new_name = f'{level_:02d}{idx:02d}({split_attribute})'
         ID3(frame, name=new_name, parent_name=name, is_root=False, level=level_)
-        num =+ 1
 
 
 if __name__ == "__main__":
