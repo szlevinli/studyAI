@@ -118,3 +118,4 @@ dmypy.json
 .vscode/settings.json
 
 *.local
+graphs/
