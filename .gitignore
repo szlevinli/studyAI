@@ -4,3 +4,4 @@ notebook/.ipynb_checkpoints/
 .vscode/.ropeproject/
 __pycache__/
 ~*.xlsx
+graphs/
