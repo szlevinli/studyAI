@@ -1,5 +1,5 @@
 .vscode/settings.json
-notebook/.ipynb_checkpoints/
+.ipynb_checkpoints/
 .DS_Store
 .vscode/.ropeproject/
 __pycache__/
