@@ -1,11 +1,11 @@
 import tensorflow as tf
 import input_data
-import numpy as np 
+import numpy as np
 
 num_class=10
 batch_size=100
 
-slim = tf.contrib.slim
+# slim = tf.contrib.slim
 
 X_batch = tf.placeholder(tf.float32,shape=[None,28,28,1])
 Y_batch = tf.placeholder(tf.float32,shape=[None,10])
@@ -37,12 +37,12 @@ h_conv1 = conv_2d(X_batch,in_size=1,out_size=32,ksize=3,stride=1)
 h_pool1=max_pool_2x2(h_conv1,ksize=3,stride=2)    #14*14*1
 
 #conv1
-#W_conv2=weight_viriable([3,3,32,64])  
+#W_conv2=weight_viriable([3,3,32,64])
 #b_conv2=bias_viriable([64])
 #h_conv2=tf.nn.relu(conv2d(h_pool1,W_conv2)+b_conv2)
 h_conv2 = conv_2d(h_pool1,in_size=32,out_size=64,ksize=3,stride=1)
 h_pool2=max_pool_2x2(h_conv2,ksize=2,stride=2)    #7*7*1
- 
+
 #fc1
 W_fc1=weight_variable([7*7*64,1024])
 b_fc1=biase_variable([1024])
@@ -78,7 +78,7 @@ with tf.Session() as sess:
             #print(sess.run(label))
             accuracy = sess.run(tf.reduce_sum(tf.cast(tf.equal(result,label),tf.int32))/batch_size)
             print(accuracy)
-    
+
 
 
 
