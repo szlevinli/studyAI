@@ -14,15 +14,16 @@
 
 3经典卷积神经网络：Lenet、VGG、GoogleNet、ResNet
 3.1 Lenet、
-3.3 ResNet18
-3.3 ResNet50
+3.2 VGG
+3.3 GoogleNet
+3.4 ResNet
 
 4###防止过拟合的方法
 4.1 Dropout
 4.2 激活函数
 4.3 数据增强
 4.4 BN 
+4.5 L1/L2
 
 ###5. 综合代码
-5.1 官方卷积对cifar10的实验
-5.2 ResNet对cifar10的实验
+5.1 Tensorflow版本的ResNet实现
