@@ -120,3 +120,4 @@ dmypy.json
 *.local
 graphs/
 *.gz
+notebook/graduation_reply/data/
